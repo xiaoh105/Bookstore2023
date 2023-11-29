@@ -28,7 +28,7 @@ class FileReader
   void CreateFile();
 
  public:
-  FileReader(string file_name_);
+  explicit FileReader(string file_name_);
   ~FileReader();
   void GetInfo(int id, int &val);
   void WriteInfo(int id, int val);
@@ -49,6 +49,7 @@ void FileReader<T, info_len>::CreateFile()
 template <class T, int info_len>
 FileReader<T, info_len>::FileReader(string file_name_):info()
 {
+  n = 0;
   file_name = std::move(file_name_);
   file_info_name = file_name + ".info";
   file.open(file_name);
@@ -63,6 +64,7 @@ FileReader<T, info_len>::FileReader(string file_name_):info()
     }
     file_info.seekg(0);
     int num;
+    file_info.read(reinterpret_cast<char *>(&n), sizeof(int));
     file_info.read(reinterpret_cast<char *>(&num), sizeof(int));
     for (int i = 1; i <= num; ++i)
     {
@@ -74,7 +76,6 @@ FileReader<T, info_len>::FileReader(string file_name_):info()
   file_info.close();
   if (size > block_size) { GetPos = GetPosBig; }
   else { GetPos = GetPosSmall; }
-  n = 0;
 }
 
 template <class T, int info_len>
@@ -139,7 +140,7 @@ int FileReader<T, info_len>::AskId()
 template <class T, int info_len>
 FileReader<T, info_len>::~FileReader()
 {
-  file_info.open(file_info_name);
+  file_info.open(file_info_name, std::ios::out);
   file.seekp(0);
   for (int i = 1; i <= info_len; ++i)
   {
@@ -147,6 +148,7 @@ FileReader<T, info_len>::~FileReader()
   }
   file_info.seekp(0);
   int num = empty_index.size();
+  file_info.write(reinterpret_cast<char *>(&n), sizeof(int));
   file_info.write(reinterpret_cast<char *>(&num), sizeof(int));
   for (int i = 0; i < num; ++i)
   {

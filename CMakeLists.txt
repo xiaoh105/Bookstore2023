@@ -6,4 +6,5 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(Include)
 
 add_executable(Homework5_Bookstore
-        src/main.cpp)
+        src/main.cpp
+        Include/FileReader.h)
