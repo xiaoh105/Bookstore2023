@@ -3,10 +3,12 @@
 
 #include <fstream>
 #include <vector>
+#include <unordered_map>
 
 using std::fstream;
 using std::string;
 using std::vector;
+using std::unordered_map;
 
 template <class T, int info_len = 1>
 class FileReader
@@ -16,8 +18,14 @@ class FileReader
   const static int size = sizeof(T);
   const static int val_per_block = block_size / size;
   const static int block_per_val = size / block_size;
+  const static int max_cache_size = 20 * block_size, max_element = 50;
+  const static int cache_size = std::min(max_element, max_cache_size / size);
   int n;
   int info[info_len + 1];
+  int ptr = 0;
+  int index[cache_size];
+  unordered_map<int, int> pos;
+  T cache[cache_size];
   fstream file, file_info;
   string file_name, file_info_name;
   vector<int> empty_index;
@@ -26,8 +34,12 @@ class FileReader
   static int GetPosBig(int);
   static int GetPosSmall(int);
   void CreateFile();
+  void GetFile(int id, T &val);
+  void WriteFile(int id, T &val);
+  void DelFile(int id);
 
  public:
+  FileReader() = delete;
   explicit FileReader(string file_name_);
   ~FileReader();
   void GetInfo(int id, int &val);
@@ -106,21 +118,21 @@ void FileReader<T, info_len>::WriteInfo(int id, int val)
 }
 
 template <class T, int info_len>
-void FileReader<T, info_len>::Get(int id, T &val)
+void FileReader<T, info_len>::GetFile(int id, T &val)
 {
   file.seekg(GetPos(id));
   file.read(reinterpret_cast<char *>(&val), size);
 }
 
 template <class T, int info_len>
-void FileReader<T, info_len>::Write(int id, T &val)
+void FileReader<T, info_len>::WriteFile(int id, T &val)
 {
   file.seekp(GetPos(id));
   file.write(reinterpret_cast<char *>(&val), size);
 }
 
 template <class T, int info_len>
-void FileReader<T, info_len>::Del(int id)
+void FileReader<T, info_len>::DelFile(int id)
 {
   empty_index.push_back(id);
 }
@@ -135,6 +147,56 @@ int FileReader<T, info_len>::AskId()
     return ret;
   }
   else { return ++n; }
+}
+
+template <class T, int info_len>
+void FileReader<T, info_len>::Get(int id, T &val)
+{
+  if (pos[id])
+  {
+    val = cache[pos[id] - 1];
+    return;
+  }
+  int nxt = (ptr + 1) % cache_size;
+  if (index[nxt])
+  {
+    WriteFile(index[nxt], cache[nxt]);
+    pos.erase(index[nxt]);
+  }
+  ptr = nxt;
+  index[ptr] = id, pos[id] = ptr + 1;
+  GetFile(id, val);
+  cache[ptr] = val;
+}
+
+template <class T, int info_len>
+void FileReader<T, info_len>::Write(int id, T &val)
+{
+  if (pos[id])
+  {
+    cache[pos[id] - 1] = val;
+    return;
+  }
+  int nxt = (ptr + 1) % cache_size;
+  if (index[nxt])
+  {
+    WriteFile(index[nxt], cache[nxt]);
+    pos.erase(index[nxt]);
+  }
+  ptr = nxt;
+  index[ptr] = id, pos[id] = ptr + 1;
+  cache[ptr] = val;
+}
+
+template <class T, int info_len>
+void FileReader<T, info_len>::Del(int id)
+{
+  if (pos[id])
+  {
+    index[pos[id] - 1] = 0;
+    pos.erase(id);
+  }
+  DelFile(id);
 }
 
 template <class T, int info_len>
@@ -154,6 +216,8 @@ FileReader<T, info_len>::~FileReader()
   {
     file_info.write(reinterpret_cast<char *>(&empty_index[i]), sizeof(int));
   }
+  for (int i = 0; i < cache_size; ++i)
+    if (index[i]) WriteFile(index[i], cache[i]);
   file.close(), file_info.close();
 }
 
