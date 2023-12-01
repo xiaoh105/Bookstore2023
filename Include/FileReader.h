@@ -9,6 +9,7 @@ using std::fstream;
 using std::string;
 using std::vector;
 using std::unordered_map;
+using std::min;
 
 template <class T, int info_len = 1>
 class FileReader
@@ -54,12 +55,18 @@ template <class T, int info_len>
 void FileReader<T, info_len>::CreateFile()
 {
   file.open(file_name, std::ios::out);
+  int tmp = 0;
+  for (int i = 1; i <= info_len; ++i)
+  {
+    file.write(reinterpret_cast<char *>(&tmp), sizeof(int));
+    info[i] = 0;
+  }
   file.close();
   file.open(file_name);
 }
 
 template <class T, int info_len>
-FileReader<T, info_len>::FileReader(string file_name_):info()
+FileReader<T, info_len>::FileReader(string file_name_):info(), index()
 {
   n = 0;
   file_name = std::move(file_name_);
