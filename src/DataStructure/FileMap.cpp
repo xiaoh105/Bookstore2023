@@ -217,14 +217,70 @@ void FileMap::Remove(const Key &key)
   if (pos == 0) UpdateParent(cur_node.key[0], cur);
   if (cur == root) return;
   if (cur_node.size >= (M + 1) >> 1) return;
-  Node left, right;
+  Node l_node, r_node, parent_node;
+  file.Get(parent[cur], parent_node);
   if (lp >= 0)
   {
-    file.Get(ls, left);
-    if (left.size > (M + 1) >> 1)
+    file.Get(ls, l_node);
+    if (l_node.size > (M + 1) >> 1)
     {
-
+      for (int i = cur_node.size - 1; i >= 0; --i)
+        cur_node.key[i + 1] = cur_node.key[i];
+      cur_node.key[0] = l_node.key[l_node.size - 1];
+      parent_node.key[lp] = cur_node.key[0];
+      cur_node.ptr[cur_node.size + 1] = cur_node.ptr[cur_node.size];
+      cur_node.ptr[cur_node.size] = 0;
+      ++cur_node.size;
+      l_node.ptr[l_node.size - 1] = l_node.ptr[l_node.size];
+      l_node.ptr[l_node.size] = 0;
+      --l_node.size;
+      file.Write(cur, cur_node);
+      file.Write(ls, l_node);
+      file.Write(parent[cur], parent_node);
       return;
     }
+  }
+  else if (rp >= 0)
+  {
+    file.Get(rs, r_node);
+    if (r_node.size > (M + 1) >> 1)
+    {
+      cur_node.key[cur_node.size] = r_node.key[0];
+      for (int i = 1; i < r_node.size; ++i)
+        r_node.key[i - 1] = r_node.key[i];
+      parent_node.key[rp - 1] = r_node.key[0];
+      cur_node.ptr[cur_node.size + 1] = cur_node.ptr[cur_node.size];
+      cur_node.ptr[cur_node.size] = 0;
+      ++cur_node.size;
+      r_node.ptr[r_node.size - 1] = r_node.ptr[r_node.size];
+      r_node.ptr[r_node.size] = 0;
+      --r_node.size;
+      file.Write(cur, cur_node);
+      file.Write(rs, r_node);
+      file.Write(parent[cur], parent_node);
+      return;
+    }
+  }
+  if (lp >= 0)
+  {
+    for (int i = 0; i < cur_node.size; ++i)
+      l_node.key[i + l_node.size] = cur_node.key[i];
+    l_node.ptr[l_node.size] = 0;
+    l_node.size += cur_node.size;
+    l_node.ptr[l_node.size] = cur_node.ptr[cur_node.size];
+    file.Write(ls, l_node);
+    RemoveInternal(cur_node.key[0], parent[cur], cur);
+    file.Del(cur);
+  }
+  else
+  {
+    for (int i = 0; i < r_node.size; ++i)
+      cur_node.key[i + cur_node.size] = r_node.key[i];
+    cur_node.ptr[cur_node.size] = 0;
+    cur_node.size += r_node.size;
+    cur_node.ptr[cur_node.size] = r_node.ptr[r_node.size];
+    file.Write(cur, cur_node);
+    RemoveInternal(r_node.key[0], parent[cur], rs);
+    file.Del(rs);
   }
 }
