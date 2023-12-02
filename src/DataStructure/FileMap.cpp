@@ -157,7 +157,7 @@ void FileMap::InsertInternal(const Key &key, int cur, int ch)
   }
   else
   {
-    InsertInternal(tmp_key[cur_node.size], parent[cur], cur);
+    InsertInternal(tmp_key[cur_node.size], parent[cur], new_id);
   }
 }
 
@@ -283,4 +283,152 @@ void FileMap::Remove(const Key &key)
     RemoveInternal(r_node.key[0], parent[cur], rs);
     file.Del(rs);
   }
+}
+
+void FileMap::RemoveInternal(const Key &key, int cur, int ch)
+{
+  Node cur_node;
+  file.Get(cur, cur_node);
+  if (cur == root && cur_node.size == 1)
+  {
+    if (cur_node.ptr[0] == ch)
+    {
+      root = cur_node.ptr[1];
+      file.Del(cur);
+    }
+    else
+    {
+      root = cur_node.ptr[0];
+      file.Del(cur);
+    }
+    return;
+  }
+  int pos = cur_node.lower_bound(key);
+  for (int i = pos + 1; i < cur_node.size; ++i)
+    cur_node.key[i - 1] = cur_node.key[i];
+  for (int i = pos + 2; i <= cur_node.size; ++i)
+    cur_node.ptr[i - 1] = cur_node.ptr[i];
+  --cur_node.size;
+  file.Write(cur, cur_node);
+  if (cur_node.size >= M >> 1) return;
+  if (cur == root) return;
+  int ls, rs, lp, rp;
+  Node parent_node;
+  file.Get(parent[cur], parent_node);
+  for (int i = 0; i <= parent_node.size; ++i)
+    if (parent_node.ptr[i] == cur)
+    {
+      lp = i - 1;
+      rp = (i == parent_node.size)? -1:i + 1;
+      if (lp >= 0) ls = parent_node.ptr[lp];
+      if (rp >= 0) rs = parent_node.ptr[rp];
+    }
+  Node left_node, right_node;
+  if (lp >= 0)
+  {
+    file.Get(ls, left_node);
+    if (left_node.size > M >> 1)
+    {
+      for (int i = cur_node.size - 1; i >= 0; --i)
+        cur_node.key[i + 1] = cur_node.key[i];
+      for (int i = cur_node.size; i >= 0; --i)
+        cur_node.ptr[i + 1] = cur_node.ptr[i];
+      cur_node.key[0] = parent_node.key[lp];
+      parent_node.key[lp] = left_node.key[left_node.size - 1];
+      cur_node.ptr[0] = left_node.ptr[left_node.size];
+      ++cur_node.size, --left_node.size;
+      file.Write(cur, cur_node);
+      file.Write(ls, left_node);
+      file.Write(parent[cur], parent_node);
+      return;
+    }
+  }
+  else if (rp >= 0)
+  {
+    file.Get(rs, right_node);
+    if (right_node.size > M >> 1)
+    {
+      cur_node.ptr[cur_node.size + 1] = right_node.ptr[0];
+      cur_node.key[cur_node.size] = parent_node.key[rp - 1];
+      parent_node.key[rp - 1] = right_node.key[0];
+      for (int i = 1; i < right_node.size; ++i)
+        right_node.key[i - 1] = right_node.key[i];
+      for (int i = 1; i <= right_node.size; ++i)
+        right_node.ptr[i - 1] = right_node.ptr[i];
+      ++cur_node.size, --right_node.size;
+      file.Write(cur, cur_node);
+      file.Write(rs, right_node);
+      file.Write(parent[cur], parent_node);
+      return;
+    }
+  }
+  if (lp >= 0)
+  {
+    for (int i = 0; i < cur_node.size; ++i)
+      left_node.key[i + left_node.size + 1] = cur_node.key[i];
+    for (int i = 0; i <= cur_node.size; ++i)
+      left_node.ptr[i + left_node.size + 1] = cur_node.ptr[i];
+    left_node.key[left_node.size] = parent_node.key[lp];
+    left_node.size += cur_node.size + 1;
+    file.Write(ls, left_node);
+    RemoveInternal(parent_node.key[lp], parent[cur], cur);
+    file.Del(cur);
+  }
+  else
+  {
+    for (int i = 0; i < right_node.size; ++i)
+      cur_node.key[i + cur_node.size + 1] = right_node.key[i];
+    for (int i = 0; i <= right_node.size; ++i)
+      cur_node.ptr[i + cur_node.size + 1] = right_node.ptr[i];
+    cur_node.key[cur_node.size] = parent_node.key[rp - 1];
+    cur_node.size += right_node.size + 1;
+    file.Write(cur, cur_node);
+    RemoveInternal(parent_node.key[rp - 1], parent[cur], rs);
+    file.Del(rs);
+  }
+}
+
+vector<int> FileMap::Find(unsigned long long index)
+{
+  vector<int> ret;
+  Key key(index, INT32_MIN);
+  if (!root) return ret;
+  int cur = root;
+  Node cur_node;
+  file.Get(cur, cur_node);
+  while (!cur_node.is_leaf)
+  {
+    int pos = cur_node.upper_bound(key);
+    cur = cur_node.ptr[pos];
+    file.Get(cur, cur_node);
+  }
+  int pos = cur_node.lower_bound(key);
+  bool flag = true;
+  while (flag)
+  {
+    for (int i = pos; i < cur_node.size; ++i)
+      if (cur_node.key[i].index == index)
+      {
+        ret.push_back(cur_node.key[i].value);
+      }
+      else
+      {
+        flag = false;
+        break;
+      }
+    if (flag)
+    {
+      pos = 0;
+      int next_node = cur_node.ptr[cur_node.size];
+      if (next_node)
+      {
+        file.Get(next_node, cur_node);
+      }
+      else
+      {
+        flag = false;
+      }
+    }
+  }
+  return ret;
 }

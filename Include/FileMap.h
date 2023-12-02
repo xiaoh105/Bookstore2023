@@ -14,6 +14,7 @@ class Key
 {
  private:
   friend class Node;
+  friend class FileMap;
   unsigned long long index;
   int value;
 
@@ -29,8 +30,8 @@ class Node
  private:
   constexpr static int M = 5;
   friend class FileMap;
-  Key key[M];
-  int ptr[M + 1], size;
+  Key key[M]{};
+  int ptr[M + 1]{}, size{};
   bool is_leaf = false;
 
  public:
@@ -57,7 +58,7 @@ class FileMap
   ~FileMap();
   void Insert(const Key &key);
   void Remove(const Key &key);
+  vector<int> Find(unsigned long long index);
 };
-
 
 #endif //HOMEWORK5_BOOKSTORE_FILEMAP_H

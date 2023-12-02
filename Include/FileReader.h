@@ -19,8 +19,8 @@ class FileReader
   const static int size = sizeof(T);
   const static int val_per_block = block_size / size;
   const static int block_per_val = size / block_size;
-  const static int max_cache_size = 20 * block_size, max_element = 50;
-  const static int cache_size = std::min(max_element, max_cache_size / size);
+  const static int max_cache_size = 30 * block_size, max_element = 50;
+  const static int cache_size = min(max_element, max_cache_size / size);
   int n;
   int info[info_len + 1];
   int ptr = 0;
@@ -46,7 +46,7 @@ class FileReader
   void GetInfo(int id, int &val);
   void WriteInfo(int id, int val);
   void Get(int, T &);
-  void Write(int, T &);
+  void Write(int, const T &);
   void Del(int);
   int AskId();
 };
@@ -177,7 +177,7 @@ void FileReader<T, info_len>::Get(int id, T &val)
 }
 
 template <class T, int info_len>
-void FileReader<T, info_len>::Write(int id, T &val)
+void FileReader<T, info_len>::Write(int id, const T &val)
 {
   if (pos[id])
   {

@@ -1,55 +1,60 @@
 #include <iostream>
-#include <FileReader.h>
+#include <cassert>
+#include "FileMap.h"
+#include "Utils.h"
 
 using std::cin, std::cout, std::endl;
-
-class Str
-{
-public:
-  char ch[10];
-  Str()
-  {
-    for (int i = 0; i < 10; ++i) ch[i] = rand() % 26 + 'a';
-  }
-  friend bool operator < (Str a, Str b)
-  {
-    for (int i = 0; i < 10; ++i)
-      if (a.ch[i] != b.ch[i]) return a.ch[i] < b.ch[i];
-    return false;
-  }
-  friend std::ostream &operator << (std::ostream &out, Str a)
-  {
-    for (int i = 0; i < 10; ++i) out << a.ch[i];
-    out << endl;
-  }
-};
-
-Str a[100];
+using std::string;
 
 int main()
 {
-  FileReader<Str, 0> file("FuckBookstore");
-  /*for (int i = 1; i <= 90; ++i) cout << a[i];
-  for (int i = 1; i <= 90; ++i)
-  {
-    file.AskId();
-    file.Write(i, a[i]);
-  }*/
-  for (int i = 1; i <= 90; ++i) file.Get(i, a[i]);
-  for (int i = 1; i <= 90; ++i)
-    for (int j = 1; j <= 89; ++j)
+  std::ios::sync_with_stdio(false);
+  FileMap mp("FuckBookStore");
+  int n;
+  cin >> n;
+  for (int i = 1; i <= n; ++i) {
+    std::string op, index;
+    int value;
+    cin >> op >> index;
+    if (op == "insert")
     {
-      Str u, v;
-      file.Get(j, u), file.Get(j + 1, v);
-      if (u < v)
+      cin >> value;
+      mp.Insert(Key(GetHash(index), value));
+    }
+    else if (op == "delete")
+    {
+      cin >> value;
+      mp.Remove(Key(GetHash(index), value));
+    }
+    else if (op == "find")
+    {
+      auto ret = mp.Find(GetHash(index));
+      if (ret.empty())
       {
-        file.Write(j, v), file.Write(j + 1, u);
+        cout << "null" << endl;
+      }
+      else
+      {
+        for (const auto &val: ret) cout << val << " ";
+        cout << endl;
       }
     }
-  for (int i = 1; i <= 90; ++i)
-  {
-    Str tmp;
-    file.Get(i, tmp);
-    cout << tmp;
+    else assert(false);
   }
 }
+/*
+13
+insert aaa 1
+insert aaa 2
+find aaa
+insert aaa 3
+delete aaa 2
+insert aaa 4
+find aaa
+insert aaa 5
+find aaa
+delete aaa 5
+insert aaa 5
+insert aaa 6
+find aaa
+ */
