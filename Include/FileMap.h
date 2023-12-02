@@ -59,7 +59,6 @@ class FileMap
   void Insert(const Key &key);
   void Remove(const Key &key);
   vector<int> Find(unsigned long long index);
-  void Print(int cur);
 };
 
 #endif //HOMEWORK5_BOOKSTORE_FILEMAP_H
