@@ -4,7 +4,7 @@
 
 using std::string;
 
-constexpr unsigned long long pow = 19260817;
+constexpr unsigned long long pow = 1314527;
 
 unsigned long long GetHash(const string &s);
 
