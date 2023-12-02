@@ -19,7 +19,7 @@ class FileReader
   const static int size = sizeof(T);
   const static int val_per_block = block_size / size;
   const static int block_per_val = size / block_size;
-  const static int max_cache_size = 30 * block_size, max_element = 50;
+  const static int max_cache_size = 50 * block_size, max_element = 100;
   const static int cache_size = min(max_element, max_cache_size / size);
   int n;
   int info[info_len + 1];

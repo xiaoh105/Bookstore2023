@@ -10,7 +10,7 @@ using std::string;
 int main()
 {
   std::ios::sync_with_stdio(false);
-  FileMap mp("FuckBookStore");
+  FileMap mp("MemoryTest");
   int n;
   cin >> n;
   for (int i = 1; i <= n; ++i) {
