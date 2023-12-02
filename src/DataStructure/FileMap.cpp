@@ -214,9 +214,20 @@ void FileMap::Remove(const Key &key)
   cur_node.ptr[cur_node.size - 1] = cur_node.ptr[cur_node.size];
   cur_node.ptr[cur_node.size] = 0;
   --cur_node.size;
-  file.Write(cur, cur_node);
   if (pos == 0) UpdateParent(cur_node.key[0], cur);
-  if (cur == root) return;
+  if (cur == root)
+  {
+    for (int i = 0; i <= cur_node.size; ++i) cur_node.ptr[i] = 0;
+    if (cur_node.size == 0)
+    {
+      file.Del(cur);
+      root = 0;
+      return;
+    }
+    file.Write(cur, cur_node);
+    return;
+  }
+  file.Write(cur, cur_node);
   if (cur_node.size >= (M + 1) >> 1) return;
   Node l_node, r_node, parent_node;
   file.Get(parent[cur], parent_node);
