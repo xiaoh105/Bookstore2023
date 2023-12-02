@@ -216,7 +216,6 @@ void FileMap::Remove(const Key &key)
   if (pos == 0) UpdateParent(cur_node.key[0], cur);
   if (cur == root)
   {
-    for (int i = 0; i <= M; ++i) cur_node.ptr[i] = 0;
     if (cur_node.size == 0)
     {
       file.Del(cur);
@@ -431,7 +430,7 @@ vector<int> FileMap::Find(unsigned long long index)
     {
       pos = 0;
       int next_node = cur_node.ptr[cur_node.size];
-      if (next_node)
+      if (next_node && cur != root)
       {
         file.Get(next_node, cur_node);
       }
@@ -442,22 +441,4 @@ vector<int> FileMap::Find(unsigned long long index)
     }
   }
   return ret;
-}
-
-void FileMap::Print(int cur)
-{
-  Node cur_node;
-  file.Get(cur, cur_node);
-  std::cout << "Node #" << cur << std::endl;
-  if (cur_node.is_leaf) std::cout << "This is a leaf." << std::endl;
-  for (int i = 0; i < cur_node.size; ++i)
-    std::cout << "(" <<  cur_node.key[i].index << "," << cur_node.key[i].value << ") " << " ";
-  std::cout << std::endl;
-  for (int i = 0; i <= cur_node.size; ++i)
-    std::cout << cur_node.ptr[i] << " ";
-  std::cout << std::endl;
-  if (!cur_node.is_leaf)
-  {
-    for (int i = 0; i <= cur_node.size; ++i) Print(cur_node.ptr[i]);
-  }
 }
