@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include "FileMap.h"
 
 using std::string;
@@ -431,4 +432,22 @@ vector<int> FileMap::Find(unsigned long long index)
     }
   }
   return ret;
+}
+
+void FileMap::Print(int cur)
+{
+  Node cur_node;
+  file.Get(cur, cur_node);
+  std::cout << "Node #" << cur << std::endl;
+  if (cur_node.is_leaf) std::cout << "This is a leaf." << std::endl;
+  for (int i = 0; i < cur_node.size; ++i)
+    std::cout << "(" <<  cur_node.key[i].index << "," << cur_node.key[i].value << ") " << " ";
+  std::cout << std::endl;
+  for (int i = 0; i <= cur_node.size; ++i)
+    std::cout << cur_node.ptr[i] << " ";
+  std::cout << std::endl;
+  if (!cur_node.is_leaf)
+  {
+    for (int i = 0; i <= cur_node.size; ++i) Print(cur_node.ptr[i]);
+  }
 }

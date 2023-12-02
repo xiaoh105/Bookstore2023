@@ -28,7 +28,7 @@ class Key
 class Node
 {
  private:
-  constexpr static int M = 320;
+  constexpr static int M = 200;
   friend class FileMap;
   Key key[M]{};
   int ptr[M + 1]{}, size{};
@@ -43,8 +43,7 @@ class Node
 class FileMap
 {
  private:
-  constexpr static int M = 320;
-  int root;
+  constexpr static int M = 200;
   string file_name;
   FileReader<Node, 1> file;
   unordered_map<int, int> parent;
@@ -53,12 +52,14 @@ class FileMap
   void UpdateParent(const Key &key, int cur);
 
  public:
+  int root;
   FileMap() = delete;
   explicit FileMap(string);
   ~FileMap();
   void Insert(const Key &key);
   void Remove(const Key &key);
   vector<int> Find(unsigned long long index);
+  void Print(int cur);
 };
 
 #endif //HOMEWORK5_BOOKSTORE_FILEMAP_H
