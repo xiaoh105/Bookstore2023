@@ -28,7 +28,7 @@ class Key
 class Node
 {
  private:
-  constexpr static int M = 200;
+  constexpr static int M = 199;
   friend class FileMap;
   Key key[M]{};
   int ptr[M + 1]{}, size{};
@@ -43,7 +43,7 @@ class Node
 class FileMap
 {
  private:
-  constexpr static int M = 200;
+  constexpr static int M = 199;
   string file_name;
   FileReader<Node, 1> file;
   unordered_map<int, int> parent;
