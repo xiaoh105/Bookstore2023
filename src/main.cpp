@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <cassert>
 #include "FileMap.h"
 #include "Utils.h"
@@ -42,19 +43,3 @@ int main()
     else assert(false);
   }
 }
-/*
-13
-insert aaa 1
-insert aaa 2
-find aaa
-insert aaa 3
-delete aaa 2
-insert aaa 4
-find aaa
-insert aaa 5
-find aaa
-delete aaa 5
-insert aaa 5
-insert aaa 6
-find aaa
- */
