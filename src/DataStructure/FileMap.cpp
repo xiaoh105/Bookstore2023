@@ -300,9 +300,8 @@ void FileMap::RemoveInternal(const Key &key, int cur, int ch)
 {
   Node cur_node;
   file.Get(cur, cur_node);
-  if (cur == root)
+  if (cur == root && cur_node.size == 1)
   {
-    if (cur_node.size != 1) return;
     if (cur_node.ptr[0] == ch)
     {
       root = cur_node.ptr[1];
