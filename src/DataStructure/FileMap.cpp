@@ -183,7 +183,6 @@ void FileMap::UpdateParent(const Key &key, int cur)
       return;
     }
     cur = fa, fa = parent[cur];
-    file.Get(fa, parent_node);
   }
 }
 
@@ -217,7 +216,7 @@ void FileMap::Remove(const Key &key)
   if (pos == 0) UpdateParent(cur_node.key[0], cur);
   if (cur == root)
   {
-    for (int i = 0; i <= cur_node.size; ++i) cur_node.ptr[i] = 0;
+    for (int i = 0; i <= M; ++i) cur_node.ptr[i] = 0;
     if (cur_node.size == 0)
     {
       file.Del(cur);
@@ -301,8 +300,9 @@ void FileMap::RemoveInternal(const Key &key, int cur, int ch)
 {
   Node cur_node;
   file.Get(cur, cur_node);
-  if (cur == root && cur_node.size == 1)
+  if (cur == root)
   {
+    if (cur_node.size != 1) return;
     if (cur_node.ptr[0] == ch)
     {
       root = cur_node.ptr[1];
