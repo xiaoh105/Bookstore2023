@@ -13,7 +13,6 @@ include_directories(Include)
 add_executable(code
         src/main.cpp
         Include/FileReader.h
-        src/DataStructure/FileMap.cpp
         Include/FileMap.h
         Include/Utils.h
         src/Utils.cpp)

@@ -43,11 +43,11 @@ class FileReader
   FileReader() = delete;
   explicit FileReader(string file_name_);
   ~FileReader();
-  void GetInfo(int id, int &val);
+  void GetInfo(int id, int &val) const;
   void WriteInfo(int id, int val);
-  void Get(int, T &);
-  void Write(int, const T &);
-  void Del(int);
+  void Get(int id, T &val);
+  void Write(int id, const T &val);
+  void Del(int id);
   int AskId();
 };
 
@@ -113,7 +113,7 @@ int FileReader<T, info_len>::GetPosBig(int id)
 }
 
 template <class T, int info_len>
-void FileReader<T, info_len>::GetInfo(int id, int &val)
+void FileReader<T, info_len>::GetInfo(int id, int &val) const
 {
   val = info[id];
 }
