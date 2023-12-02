@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include "FileMap.h"
 
 using std::string;
@@ -246,9 +247,9 @@ void FileMap::Remove(const Key &key)
     if (r_node.size > (M + 1) >> 1)
     {
       cur_node.key[cur_node.size] = r_node.key[0];
-      parent_node.key[rp - 1] = r_node.key[0];
       for (int i = 1; i < r_node.size; ++i)
         r_node.key[i - 1] = r_node.key[i];
+      parent_node.key[rp - 1] = r_node.key[0];
       cur_node.ptr[cur_node.size + 1] = cur_node.ptr[cur_node.size];
       cur_node.ptr[cur_node.size] = 0;
       ++cur_node.size;
@@ -431,4 +432,22 @@ vector<int> FileMap::Find(unsigned long long index)
     }
   }
   return ret;
+}
+
+void FileMap::Print(int cur)
+{
+  Node cur_node;
+  file.Get(cur, cur_node);
+  std::cout << "Node #" << cur << std::endl;
+  if (cur_node.is_leaf) std::cout << "This is a leaf." << std::endl;
+  for (int i = 0; i < cur_node.size; ++i)
+    std::cout << "(" <<  cur_node.key[i].index << "," << cur_node.key[i].value << ") " << " ";
+  std::cout << std::endl;
+  for (int i = 0; i <= cur_node.size; ++i)
+    std::cout << cur_node.ptr[i] << " ";
+  std::cout << std::endl;
+  if (!cur_node.is_leaf)
+  {
+    for (int i = 0; i <= cur_node.size; ++i) Print(cur_node.ptr[i]);
+  }
 }
