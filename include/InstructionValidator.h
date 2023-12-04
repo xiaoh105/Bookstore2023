@@ -3,8 +3,15 @@
 
 #include <string>
 #include <initializer_list>
+#include <regex>
 
 using std::string;
+using std::basic_regex;
+using std::regex_constants::optimize;
+
+string GetOptional(const string &s);
+string GetMultiple(const string &s);
+string GetInstruction(const std::initializer_list<string> &s);
 
 namespace regex
 {
@@ -17,25 +24,60 @@ namespace regex
   const string ISBN = "([!-~]{1,20})";
   const string book_name = "([!#-~]{1,60})";
   const string author = "([!#-~]{1,60})";
-  // Notice: No check for length of keywords
+// Notice: No check for length of keywords
   const string keywords = "((?:[!#-{}~]{1,60}\\x7c)+[!#-{}~]{1,60})";
-  // Notice: No check for maximum of quantity
+// Notice: No check for maximum of quantity
   const string quantity = "(\\d{1,10})";
   const string price = "(\\d{1,10}\\x2e\\d{2})";
-  // Notice: No check for maximum of count
+  const string total_cost = "(\\d{1,10}\\x2e\\d{2})";
+// Notice: No check for maximum of count
   const string count = "(\\d{1,10})";
+  const string book_info_show =
+          "(-ISBN=" + ISBN + "|-name=" + book_name +
+          "|-author=" + author + "|-keyword=" + keywords + ")";
+  const string book_info_price =
+          "(-ISBN=" + ISBN + "|-name=" + book_name +
+          "|-author=" + author + "|-keyword=" + keywords +
+          "|-price=" + price + ")";
 
-  string operator !(const string &s);
-  string GetInstruction(const std::initializer_list<string> &s);
   const string quit = GetInstruction({"quit|exit"});
-  const string su = GetInstruction({"su", user_id, !password});
+  const string su = GetInstruction({"su", user_id, GetOptional(password)});
   const string logout = GetInstruction({"logout"});
   const string reg = GetInstruction({"register", user_id, password, username});
   const string passwd =
-          GetInstruction({"passwd", user_id, !current_password, new_password});
+          GetInstruction({"passwd", user_id,
+                          GetOptional(current_password), new_password});
   const string useradd =
           GetInstruction({"useradd", user_id, password, privilege, username});
   const string del = GetInstruction({"delete", user_id});
+
+  const string show = GetInstruction({"show", GetOptional(book_info_show)});
+  const string buy = GetInstruction({"buy", ISBN, quantity});
+  const string sel = GetInstruction({"select", ISBN});
+  const string modify =
+          GetInstruction({"modify", GetMultiple(book_info_price)});
+  const string import = GetInstruction({"import", quantity, total_cost});
+
+  const string show_finance =
+          GetInstruction({"show", "finance", GetOptional(count)});
+  const string log = GetInstruction({"log"});
 }
+
+bool GetQuit(const string &s);
+bool GetSu(const string &s, string &userid, string &password);
+bool GetLogout(const string &s);
+bool GetRegister(const string &s, string &userid,
+                 string &password, string &username);
+bool GetPassword(const string &s, string &userid,
+                 string &current_password, string &new_password);
+bool GetUserAdd(const string &s, string &userid, string &password,
+                string &privilege, string &username);
+bool GetDelete(const string &s, string &userid);
+bool GetShow(const string &s, string &ISBN, string &name,
+             string &author, string &keyword);
+bool GetBuy(const string &s, string &ISBN, string &quantity);
+bool GetSelect(const string &s, string &ISBN);
+
+
 
 #endif //HOMEWORK5_BOOKSTORE_INSTRUCTIONVALIDATOR_H
