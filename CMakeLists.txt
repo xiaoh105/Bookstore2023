@@ -8,11 +8,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -funroll-loops")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-use")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
 
-include_directories(Include)
+include_directories(include)
 
 add_executable(code
         src/main.cpp
-        Include/FileReader.h
-        Include/FileMap.h
-        Include/Utils.h
-        src/Utils.cpp)
+        include/FileReader.h
+        include/FileMap.h
+        include/Utils.h
+        src/Utils.cpp
+        src/InstructionValidator.cpp
+        include/InstructionValidator.h
+        src/BookSystem.cpp
+        include/BookSystem.h)
