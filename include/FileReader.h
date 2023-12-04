@@ -49,7 +49,16 @@ class FileReader
   void Write(int id, const T &val);
   void Del(int id);
   int AskId();
+  T operator [](int id);
 };
+
+template<class T, int info_len>
+T FileReader<T, info_len>::operator[](int id)
+{
+  T ret;
+  Get(id, ret);
+  return std::move(ret);
+}
 
 template <class T, int info_len>
 void FileReader<T, info_len>::CreateFile()
