@@ -1,4 +1,5 @@
 #include "InstructionValidator.h"
+#include "Utils.h"
 
 using namespace regex;
 using std::regex_match;
@@ -30,15 +31,23 @@ string GetMultiple(const string &s)
   return s + "+";
 }
 
-string GetInstruction(const std::initializer_list<string> &s)
+string GetInstruction(const std::initializer_list<string> &s,
+                      bool suffix_space)
 {
   string ret = "\\s*";
   for (const auto &str: s)
   {
     ret += str + "\\s+";
   }
-  ret.pop_back();
-  ret.push_back('*');
+  if (suffix_space)
+  {
+    ret.pop_back();
+    ret.push_back('*');
+  }
+  else
+  {
+    ret.pop_back(), ret.pop_back(), ret.pop_back();
+  }
   return ret;
 }
 
@@ -110,17 +119,60 @@ bool GetLog(const string &s)
 bool GetShow(const string &s, string &ISBN, string &name,
              string &author, string &keyword)
 {
+  string s2 = s + ' ';
   smatch match;
-  if (!regex_match(s, match, regex_show)) return false;
+  if (!regex_match(s2, match, regex_show)) return false;
   ISBN = match[1], name = match[2], author = match[3], keyword = match[4];
   if (keyword.length() > 60) return false;
   return true;
 }
 
-bool GetBuy(const string &s, string &ISBN, string &quantity)
+bool GetBuy(const string &s, string &ISBN, int &quantity)
 {
   smatch match;
   if (!regex_match(s, match, regex_buy)) return false;
-  ISBN = match[1], quantity = match[2];
-  
+  ISBN = match[1];
+  string tmp = match[2];
+  if (std::stoll(tmp) > INT32_MAX) return false;
+  quantity = std::stoi(tmp);
+  return true;
+}
+
+bool GetImport(const string &s, int &quantity, long double &total_cost)
+{
+  smatch match;
+  if (!regex_match(s, match, regex_import)) return false;
+  string tmp1 = match[1], tmp2 = match[2];
+  if (std::stoll(tmp1) > INT32_MAX) return false;
+  quantity = std::stoi(tmp1), total_cost = std::stold(tmp2);
+  return true;
+}
+
+bool GetShowFinance(const string &s, int &count)
+{
+  smatch match;
+  if (!regex_match(s, match, regex_show_finance)) return false;
+  string tmp = match[1];
+  if (std::stoll(tmp) > INT32_MAX) return false;
+  count = std::stoi(tmp);
+  return true;
+}
+
+bool GetModify(const string &s, string &ISBN, string &name, string &author,
+               string &keyword, long double &price)
+{
+  string s2 = s + ' ';
+  smatch match;
+  if (!regex_match(s2, match, regex_modify)) return false;
+  ISBN = match[2], name = match[3], author = match[4];
+  keyword = match[5];
+  string tmp = match[6];
+  if (keyword.length() > 60) return false;
+  if (StrCount(s, " -ISBN=") >= 2) return false;
+  if (StrCount(s, " -name=") >= 2) return false;
+  if (StrCount(s, " -author=") >= 2) return false;
+  if (StrCount(s, " -keyword=") >= 2) return false;
+  if (StrCount(s, " -price=") >= 2) return false;
+  price = tmp.empty()? 0:std::stold(tmp);
+  return true;
 }
