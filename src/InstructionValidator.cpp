@@ -20,6 +20,7 @@ basic_regex regex_modify(modify, optimize);
 basic_regex regex_import(import, optimize);
 basic_regex regex_show_finance(show_finance, optimize);
 basic_regex regex_log(log, optimize);
+basic_regex regex_report(report, optimize);
 
 string GetOptional(const string &s)
 {
@@ -173,6 +174,14 @@ bool GetModify(const string &s, string &ISBN, string &name, string &author,
   if (StrCount(s, " -author=") >= 2) return false;
   if (StrCount(s, " -keyword=") >= 2) return false;
   if (StrCount(s, " -price=") >= 2) return false;
-  price = tmp.empty()? 0:std::stold(tmp);
+  price = tmp.empty()? -1:std::stold(tmp);
+  return true;
+}
+
+bool GetReport(const string &s, bool &is_finance)
+{
+  smatch match;
+  if (!regex_match(s, match, regex_report)) return false;
+  is_finance = match[1] == "finance";
   return true;
 }

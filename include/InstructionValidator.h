@@ -64,6 +64,7 @@ namespace regex
   const string show_finance =
           GetInstruction({"show", "finance", GetOptional(count)});
   const string log = GetInstruction({"log"});
+  const string report = GetInstruction({"report", "(finance|employee)"});
 }
 
 bool GetQuit(const string &s);
@@ -86,5 +87,6 @@ bool GetModify(const string &s, string &ISBN, string &name, string &author,
 bool GetImport(const string &s, int &quantity, long double &total_cost);
 bool GetShowFinance(const string &s, int &count);
 bool GetLog(const string &s);
+bool GetReport(const string &s, bool &is_finance);
 
 #endif //HOMEWORK5_BOOKSTORE_INSTRUCTIONVALIDATOR_H
