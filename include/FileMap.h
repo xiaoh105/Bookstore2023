@@ -66,6 +66,7 @@ class FileMap
   void Insert(const Key<index_type, value_type> &key);
   void Remove(const Key<index_type, value_type> &key);
   vector<value_type> Find(unsigned long long index);
+  vector<value_type> FindAll();
 };
 
 template <class T1, class T2>
@@ -514,6 +515,37 @@ vector<T2> FileMap<T1, T2>::Find(unsigned long long index)
       {
         flag = false;
       }
+    }
+  }
+  return ret;
+}
+
+template <class T1, class T2>
+vector<T2> FileMap<T1, T2>::FindAll()
+{
+  vector<int> ret;
+  if (!root) return ret;
+  int cur = root;
+  Node cur_node;
+  file.Get(cur, cur_node);
+  while (!cur_node.is_leaf)
+  {
+    cur = cur_node.ptr[0];
+    file.Get(cur, cur_node);
+  }
+  bool flag = true;
+  while (flag)
+  {
+    for (int i = 0; i < cur_node.size; ++i)
+      ret.push_back(cur_node.key[i].value);
+    int next_node = cur_node.ptr[cur_node.size];
+    if (next_node && cur != root)
+    {
+      file.Get(next_node, cur_node);
+    }
+    else
+    {
+      flag = false;
     }
   }
   return ret;

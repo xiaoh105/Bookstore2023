@@ -1,4 +1,6 @@
+#include <iostream>
 #include <Utils.h>
+
 
 unsigned long long GetHash(const string &s)
 {
@@ -33,4 +35,27 @@ int StrCount(const string &s, const string &pattern)
     if (CalcHash(h, p, i, i + pattern.length() - 1) == h_pattern)
       ++ret;
   return ret;
+}
+
+void Invalid()
+{
+  std::cout << "Invalid" << std::endl;
+}
+
+vector<string> SplitKeyword(const string &s)
+{
+  vector<string> ret;
+  string tmp;
+  for (const auto &i: s)
+    if (i != '|')
+    {
+      tmp += i;
+    }
+    else
+    {
+      ret.push_back(std::move(tmp));
+      tmp = "";
+    }
+  if (!tmp.empty()) ret.push_back(tmp);
+  return std::move(ret);
 }

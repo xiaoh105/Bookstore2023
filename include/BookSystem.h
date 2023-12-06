@@ -35,16 +35,20 @@ class BookSystem
   int num;
   FileReader<BookInfo, 1> book;
   FileMap<> code_map, name_map, author_map, keyword_map;
+  int Find(const string &code);
+
  public:
+  static const int npos = -1;
   BookSystem();
   ~BookSystem();
-  void Show();
-  void ShowCode(const string &code);
-  void ShowName(const string &name);
-  void ShowAuthor(const string &author);
-  void ShowKeyword(const string &keyword);
-  int Find(const string &code);
-  
+  int Create(const string &code);
+  int Select(const string &code);
+  void Show(const string &code, const string &name,
+            const string &author, const string &keyword);
+  void Buy(const string &code, int quantity);
+  void Modify(int id, const string &ISBN, const string &name,
+              const string &author, const string &keyword, long double price);
+  void Import(int id, int quantity, long double total_cost);
 };
 
 
