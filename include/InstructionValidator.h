@@ -75,7 +75,7 @@ bool GetRegister(const string &s, string &userid,
 bool GetPassword(const string &s, string &userid,
                  string &current_password, string &new_password);
 bool GetUserAdd(const string &s, string &userid, string &password,
-                string &privilege, string &username);
+                int &privilege, string &username);
 bool GetDelete(const string &s, string &userid);
 bool GetShow(const string &s, string &ISBN, string &name,
              string &author, string &keyword);

@@ -88,12 +88,12 @@ bool GetPassword(const string &s, string &userid,
 }
 
 bool GetUserAdd(const string &s, string &userid, string &password,
-                string &privilege, string &username)
+                int &privilege, string &username)
 {
   smatch match;
   if (!regex_match(s, match, regex_useradd)) return false;
   userid = match[1], password = match[2];
-  privilege = match[3], username = match[4];
+  privilege = std::stoi(match[3]), username = match[4];
 }
 
 bool GetDelete(const string &s, string &userid)

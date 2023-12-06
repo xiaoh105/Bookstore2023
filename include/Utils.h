@@ -16,4 +16,6 @@ void Invalid();
 
 vector<string> SplitKeyword(const string &s);
 
+string GetWord(const string &s);
+
 #endif //HOMEWORK5_BOOKSTORE_UTILS_H

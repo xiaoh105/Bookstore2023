@@ -59,3 +59,16 @@ vector<string> SplitKeyword(const string &s)
   if (!tmp.empty()) ret.push_back(tmp);
   return std::move(ret);
 }
+
+string GetWord(const string &s)
+{
+  string ret;
+  int pos = 0;
+  while (pos < s.length() && s[pos] == ' ') ++pos;
+  while (pos < s.length() && s[pos] != ' ')
+  {
+    ret += s[pos];
+    ++pos;
+  }
+  return ret;
+}
