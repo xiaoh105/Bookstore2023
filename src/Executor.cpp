@@ -28,16 +28,16 @@ void Executor::listen()
     string command;
     getline(cin, command);
     string op = GetWord(command);
-    if (command.empty())
+    if (op.empty())
     {
       continue;
     }
-    else if (command == "quit" || command == "exit")
+    else if (op == "quit" || op == "exit")
     {
       if (GetQuit(command)) { flag = false; }
       else { Invalid(); }
     }
-    else if (command == "su")
+    else if (op == "su")
     {
       string userid, password, username;
       Privilege cur_privilege;
@@ -48,14 +48,14 @@ void Executor::listen()
         {
           name_stack.push(username);
           p_stack.push(cur_privilege);
-          book_stack.push(npos);
+          book_stack.push(-1);
           id_stack.push(userid);
           ++id_map[userid];
         }
       }
       else { Invalid(); }
     }
-    else if (command == "logout")
+    else if (op == "logout")
     {
       if (GetLogout(command))
       {
@@ -67,11 +67,12 @@ void Executor::listen()
           --id_map[id_stack.top()];
           if (id_map[id_stack.top()] == 0) id_map.erase(id_stack.top());
           id_stack.pop();
+          book_stack.pop();
         }
       }
       else { Invalid(); }
     }
-    else if (command == "register")
+    else if (op == "register")
     {
       string userid, password, username;
       if (GetRegister(command, userid, password, username))
@@ -80,21 +81,22 @@ void Executor::listen()
       }
       else { Invalid(); }
     }
-    else if (command == "passwd")
+    else if (op == "passwd")
     {
       string userid, cur_password, new_password;
-      if (GetPassword(command, userid, cur_password, new_password))
+      if (GetPrivilege() >= Privilege::customer &&
+          GetPassword(command, userid, cur_password, new_password))
       {
         user.Passwd(userid, GetPrivilege(), cur_password, new_password);
       }
       else { Invalid(); }
     }
-    else if (command == "useradd")
+    else if (op == "useradd")
     {
       string userid, password, username;
       int privilege;
       if (GetPrivilege() >= Privilege::employee &&
-               GetUserAdd(command, userid, password, privilege, username))
+          GetUserAdd(command, userid, password, privilege, username))
       {
         user.UserAdd(userid, password, privilege, userid, GetPrivilege());
       }
@@ -103,7 +105,7 @@ void Executor::listen()
         Invalid();
       }
     }
-    else if (command == "delete")
+    else if (op == "delete")
     {
       string userid;
       if (GetPrivilege() >= Privilege::root &&
@@ -119,6 +121,82 @@ void Executor::listen()
       {
         Invalid();
       }
+    }
+    else if (op == "show")
+    {
+      string ISBN, name, author, keyword;
+      if (GetPrivilege() >= Privilege::customer &&
+          GetShow(command, ISBN, name, author, keyword))
+      {
+        book.Show(ISBN, name, author, keyword);
+      }
+      else
+      {
+        Invalid();
+      }
+    }
+    else if (op == "buy")
+    {
+      string ISBN;
+      int quantity;
+      if (GetPrivilege() >= Privilege::customer &&
+          GetBuy(command, ISBN, quantity))
+      {
+        book.Buy(ISBN, quantity);
+      }
+      else
+      {
+        Invalid();
+      }
+    }
+    else if (op == "select")
+    {
+      string ISBN;
+      if (GetPrivilege() >= Privilege::employee &&
+          GetSelect(command, ISBN))
+      {
+        int id = book.Select(ISBN);
+        book_stack.pop();
+        book_stack.push(id);
+      }
+    }
+    else if (op == "modify")
+    {
+      string ISBN, name, author, keyword;
+      long double price;
+      if (GetPrivilege() >= Privilege::employee &&
+          GetModify(command, ISBN, name, author, keyword, price))
+      {
+        if (book_stack.top() == npos) { Invalid(); }
+        else
+        {
+          int id = book_stack.top();
+          book.Modify(id, ISBN, name, author, keyword, price);
+        }
+      }
+      else
+      {
+        Invalid();
+      }
+    }
+    else if (op == "import")
+    {
+      int quantity;
+      long double total_cost;
+      if (GetPrivilege() >= Privilege::employee &&
+          GetImport(command, quantity, total_cost))
+      {
+        int id = book_stack.top();
+        if (id == npos) { Invalid(); }
+        else
+        {
+          book.Import(id, quantity, total_cost);
+        }
+      }
+    }
+    else
+    {
+      Invalid();
     }
   }
 }

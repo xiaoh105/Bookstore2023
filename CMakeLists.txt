@@ -25,4 +25,5 @@ add_executable(code
         src/Log.cpp
         include/Log.h
         src/Executor.cpp
-        include/Executor.h)
+        include/Executor.h
+        src/FileMap.cpp)

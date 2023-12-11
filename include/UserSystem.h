@@ -35,7 +35,7 @@ class UserSystem
   const static int npos = -1;
   int num;
   FileReader<UserInfo, 1> user;
-  FileMap<> id_map;
+  FileMap id_map;
   int Find(const string &userid);
   void Insert(const string &userid, const string &password,
               Privilege privilege, const string &username);

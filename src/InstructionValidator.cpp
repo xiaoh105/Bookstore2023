@@ -1,3 +1,4 @@
+#include <iostream>
 #include "InstructionValidator.h"
 #include "Utils.h"
 
@@ -24,7 +25,7 @@ basic_regex regex_report(report, optimize);
 
 string GetOptional(const string &s)
 {
-  return s + "?";
+  return s + '?';
 }
 
 string GetMultiple(const string &s)
@@ -85,15 +86,18 @@ bool GetPassword(const string &s, string &userid,
   smatch match;
   if (!regex_match(s, match, regex_passwd)) return false;
   userid = match[1], current_password = match[2], new_password = match[3];
+  return true;
 }
 
 bool GetUserAdd(const string &s, string &userid, string &password,
                 int &privilege, string &username)
 {
   smatch match;
+  regex_match(s, match, regex_useradd);
   if (!regex_match(s, match, regex_useradd)) return false;
   userid = match[1], password = match[2];
   privilege = std::stoi(match[3]), username = match[4];
+  return true;
 }
 
 bool GetDelete(const string &s, string &userid)
@@ -123,7 +127,7 @@ bool GetShow(const string &s, string &ISBN, string &name,
   string s2 = s + ' ';
   smatch match;
   if (!regex_match(s2, match, regex_show)) return false;
-  ISBN = match[1], name = match[2], author = match[3], keyword = match[4];
+  ISBN = match[2], name = match[3], author = match[4], keyword = match[5];
   if (keyword.length() > 60) return false;
   return true;
 }

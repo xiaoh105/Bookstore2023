@@ -29,11 +29,12 @@ bool operator != (const BookInfo &x, const BookInfo &y)
   return std::strcmp(x.code, y.code) != 0;
 }
 
-ostream operator << (ostream &out, const BookInfo &val)
+ostream &operator << (ostream &out, const BookInfo &val)
 {
   out << std::fixed << std::setprecision(2);
   out << val.code << "\t" << val.name << "\t" << val.author << "\t"
   << val.keyword << "\t" << val.price << "\t" << val.stock << endl;
+  return out;
 }
 
 BookSystem::BookSystem():
@@ -100,6 +101,8 @@ void BookSystem::Buy(const string &code, int quantity)
   info.stock -= quantity;
   if (info.stock < 0) { Invalid(); return; }
   book.Write(id, info);
+  cout << std::fixed << std::setprecision(2);
+  cout << quantity * info.price << endl;
 }
 
 void BookSystem::Modify(int id, const string &ISBN,
@@ -136,7 +139,7 @@ void BookSystem::Modify(int id, const string &ISBN,
   {
     for (const auto &i: SplitKeyword(info.keyword))
       keyword_map.Remove({GetHash(i), id});
-    for (int i = 0; i < author.size(); ++i)
+    for (int i = 0; i < keyword.size(); ++i)
       info.keyword[i] = keyword[i];
     info.keyword[keyword.size()] = 0;
     unordered_map<string, bool> check;
@@ -164,5 +167,6 @@ int BookSystem::Create(const string &code)
   num = book.AskId();
   BookInfo new_book(code);
   book.Write(num, new_book);
+  code_map.Insert({GetHash(code), num});
+  return num;
 }
-

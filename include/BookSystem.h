@@ -21,12 +21,12 @@ class BookInfo
   long long stock;
   long double price;
  public:
-  BookInfo() = default;
+  BookInfo(): code{}, name{}, author{}, keyword{}, stock(), price(){};
   explicit BookInfo(const string &code_);
   friend bool operator < (const BookInfo &, const BookInfo &);
   friend bool operator != (const BookInfo &, const BookInfo &);
   friend bool operator == (const BookInfo &, const BookInfo &);
-  friend ostream operator << (ostream &, const BookInfo &);
+  friend ostream &operator << (ostream &, const BookInfo &);
 };
 
 class BookSystem
@@ -34,7 +34,7 @@ class BookSystem
  private:
   int num;
   FileReader<BookInfo, 1> book;
-  FileMap<> code_map, name_map, author_map, keyword_map;
+  FileMap code_map, name_map, author_map, keyword_map;
   int Find(const string &code);
 
  public:

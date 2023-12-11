@@ -1,3 +1,4 @@
+#include <iostream>
 #include <cassert>
 #include "UserSystem.h"
 #include "Utils.h"
@@ -96,11 +97,13 @@ void UserSystem::Insert(const string &userid, const string &password,
 }
 
 void UserSystem::Passwd(const string &userid, Privilege privilege,
-                        const string &cur_password, const string &new_password)
+                        const string &cur_password_, const string &new_password)
 {
   int id = Find(userid);
   if (id == npos) { Invalid(); return; }
   auto info = user[id];
+  auto cur_password(cur_password_);
+  while (cur_password.back() == ' ') cur_password.pop_back();
   if (privilege == Privilege::root)
   {
     if (!cur_password.empty() && cur_password != info.password)
@@ -129,7 +132,7 @@ void UserSystem::UserAdd(const string &userid, const string &password,
     return;
   }
   int id = Find(userid);
-  if (id == npos) {Invalid(); return; }
+  if (id != npos) { Invalid(); return; }
   Insert(userid, password, static_cast<Privilege>(privilege), username);
 }
 
