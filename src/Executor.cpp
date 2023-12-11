@@ -206,6 +206,7 @@ void Executor::listen()
           book.Import(id, quantity, total_cost);
         }
       }
+      else { Invalid(); }
     }
     else
     {

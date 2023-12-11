@@ -1,3 +1,4 @@
+#include <iostream>
 #include "InstructionValidator.h"
 #include "Utils.h"
 
@@ -59,8 +60,9 @@ bool GetQuit(const string &s)
 
 bool GetSu(const string &s, string &userid, string &password)
 {
+  auto s2 = s + ' ';
   smatch match;
-  if (!regex_match(s, match, regex_su)) return false;
+  if (!regex_match(s2, match, regex_su)) return false;
   userid = match[1], password = match[2];
   return true;
 }

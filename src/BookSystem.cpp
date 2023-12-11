@@ -112,9 +112,26 @@ void BookSystem::Modify(int id, const string &ISBN,
 {
   auto info = book[id];
   if (ISBN == info.code) { Invalid(); return; }
+  bool flag = true;
+  if (!ISBN.empty() && Find(ISBN) != npos) { Invalid(); return; }
+  if (!keyword.empty())
+  {
+    for (const auto &i: SplitKeyword(info.keyword))
+      keyword_map.Remove({GetHash(i), id});
+    for (int i = 0; i < keyword.size(); ++i)
+      info.keyword[i] = keyword[i];
+    info.keyword[keyword.size()] = 0;
+    unordered_map<string, bool> check;
+    for (const auto &i: SplitKeyword(info.keyword))
+    {
+      if (check[i]) { Invalid(); return; }
+      check[i] = true;
+    }
+    for (const auto &i: SplitKeyword(info.keyword))
+      keyword_map.Insert({GetHash(i), id});
+  }
   if (!ISBN.empty())
   {
-    if (Find(ISBN) != npos) { Invalid(); return; }
     code_map.Remove({GetHash(info.code), id});
     for (int i = 0; i < ISBN.size(); ++i)
       info.code[i] = ISBN[i];
@@ -136,20 +153,6 @@ void BookSystem::Modify(int id, const string &ISBN,
       info.author[i] = author[i];
     info.author[author.size()] = 0;
     author_map.Insert({GetHash(info.author), id});
-  }
-  if (!keyword.empty())
-  {
-    for (const auto &i: SplitKeyword(info.keyword))
-      keyword_map.Remove({GetHash(i), id});
-    for (int i = 0; i < keyword.size(); ++i)
-      info.keyword[i] = keyword[i];
-    info.keyword[keyword.size()] = 0;
-    unordered_map<string, bool> check;
-    for (const auto &i: SplitKeyword(info.keyword))
-    {
-      if (check[i]) { Invalid(); return; }
-      keyword_map.Insert({GetHash(i), id});
-    }
   }
   if (price >= 0) info.price = price;
   book.Write(id, info);

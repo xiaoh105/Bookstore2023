@@ -35,7 +35,7 @@ void FinanceLog::Print(int cnt)
       tmp > 0 ? income += tmp : outcome += tmp;
     }
     cout << std::fixed << std::setprecision(2);
-    cout << "+ " << income << " - " << -outcome << endl;
+    cout << "+ " << income << " - " << std::abs(outcome) << endl;
   }
   else if (cnt <= num)
   {
@@ -45,7 +45,7 @@ void FinanceLog::Print(int cnt)
       tmp > 0 ? income += tmp : outcome += tmp;
     }
     cout << std::fixed << std::setprecision(2);
-    cout << "+ " << income << " - " << -outcome << endl;
+    cout << "+ " << income << " - " << std::abs(outcome) << endl;
   }
   else { Invalid(); }
 }
