@@ -3,6 +3,9 @@
 
 #include <stack>
 #include "UserSystem.h"
+#include "Log.h"
+
+extern FinanceLog finance_log;
 
 using std::stack;
 using std::string;

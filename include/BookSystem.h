@@ -2,8 +2,11 @@
 #define HOMEWORK5_BOOKSTORE_BOOKSYSTEM_H
 
 #include <string>
-#include <FileMap.h>
-#include <FileReader.h>
+#include "FileMap.h"
+#include "FileReader.h"
+#include "Log.h"
+
+extern FinanceLog finance_log;
 
 using std::string;
 using std::ostream;

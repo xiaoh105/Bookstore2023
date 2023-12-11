@@ -103,6 +103,7 @@ void BookSystem::Buy(const string &code, int quantity)
   book.Write(id, info);
   cout << std::fixed << std::setprecision(2);
   cout << quantity * info.price << endl;
+  finance_log.Insert(quantity * info.price);
 }
 
 void BookSystem::Modify(int id, const string &ISBN,
@@ -113,6 +114,7 @@ void BookSystem::Modify(int id, const string &ISBN,
   if (ISBN == info.code) { Invalid(); return; }
   if (!ISBN.empty())
   {
+    if (Find(ISBN) != npos) { Invalid(); return; }
     code_map.Remove({GetHash(info.code), id});
     for (int i = 0; i < ISBN.size(); ++i)
       info.code[i] = ISBN[i];
@@ -160,6 +162,7 @@ void BookSystem::Import(int id, int quantity, long double total_cost)
   auto info = book[id];
   info.stock += quantity;
   book.Write(id, info);
+  finance_log.Insert(-total_cost);
 }
 
 int BookSystem::Create(const string &code)

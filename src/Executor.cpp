@@ -4,11 +4,13 @@
 #include "Utils.h"
 #include "BookSystem.h"
 #include "UserSystem.h"
+#include "Log.h"
 
 using std::cin;
 
 BookSystem book;
 UserSystem user;
+FinanceLog finance_log;
 
 Executor::Executor():name_stack(), book_stack(), id_map(), id_stack()
 {
@@ -27,6 +29,7 @@ void Executor::listen()
   {
     string command;
     getline(cin, command);
+    if (cin.eof()) { flag = false; }
     string op = GetWord(command);
     if (op.empty())
     {
@@ -125,10 +128,16 @@ void Executor::listen()
     else if (op == "show")
     {
       string ISBN, name, author, keyword;
+      int count;
       if (GetPrivilege() >= Privilege::customer &&
           GetShow(command, ISBN, name, author, keyword))
       {
         book.Show(ISBN, name, author, keyword);
+      }
+      else if (GetPrivilege() >= Privilege::root &&
+               GetShowFinance(command, count))
+      {
+        finance_log.Print(count);
       }
       else
       {
@@ -158,6 +167,10 @@ void Executor::listen()
         int id = book.Select(ISBN);
         book_stack.pop();
         book_stack.push(id);
+      }
+      else
+      {
+        Invalid();
       }
     }
     else if (op == "modify")

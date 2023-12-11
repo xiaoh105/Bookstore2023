@@ -1,4 +1,3 @@
-#include <iostream>
 #include "InstructionValidator.h"
 #include "Utils.h"
 
@@ -155,9 +154,15 @@ bool GetImport(const string &s, int &quantity, long double &total_cost)
 
 bool GetShowFinance(const string &s, int &count)
 {
+  auto s2 = s + ' ';
   smatch match;
-  if (!regex_match(s, match, regex_show_finance)) return false;
+  if (!regex_match(s2, match, regex_show_finance)) return false;
   string tmp = match[1];
+  if (tmp.empty())
+  {
+    count = -1;
+    return true;
+  }
   if (std::stoll(tmp) > INT32_MAX) return false;
   count = std::stoi(tmp);
   return true;
