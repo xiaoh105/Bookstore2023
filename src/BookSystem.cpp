@@ -161,7 +161,7 @@ void BookSystem::Modify(int id, const string &ISBN,
 void BookSystem::Import(int id, int quantity, long double total_cost)
 {
   if (quantity == 0) { Invalid(); return; }
-  if (total_cost < 1e-3) { Invalid(); return; }
+  if (total_cost <= 0) { Invalid(); return; }
   auto info = book[id];
   info.stock += quantity;
   book.Write(id, info);
