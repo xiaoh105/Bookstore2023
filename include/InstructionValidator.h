@@ -30,8 +30,8 @@ namespace regex
   const string keywords = "\"((?:[!#-{}~]{1,60}\\x7c)*[!#-{}~]{1,60})\"";
 // Notice: No check for maximum of quantity
   const string quantity = "(\\d{1,10})";
-  const string price = "(\\d{1,10}(?:\\x2e\\d{1,2})?)";
-  const string total_cost = "(\\d{1,10}(?:\\x2e\\d{1,2})?)";
+  const string price = "(\\d+(?:\\x2e\\d*)?)";
+  const string total_cost = "(\\d+(?:\\x2e\\d*)?)";
 // Notice: No check for maximum of count
   const string count = "(\\d{1,10})";
   const string book_info_show =

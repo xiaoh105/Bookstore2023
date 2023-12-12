@@ -150,6 +150,7 @@ bool GetImport(const string &s, int &quantity, long double &total_cost)
   if (!regex_match(s, match, regex_import)) return false;
   string tmp1 = match[1], tmp2 = match[2];
   if (std::stoll(tmp1) > INT32_MAX) return false;
+  if (tmp2.size() > 13) return false;
   quantity = std::stoi(tmp1), total_cost = std::stold(tmp2);
   return true;
 }
@@ -185,6 +186,7 @@ bool GetModify(const string &s, string &ISBN, string &name, string &author,
   if (StrCount(s, " -author=") >= 2) return false;
   if (StrCount(s, " -keyword=") >= 2) return false;
   if (StrCount(s, " -price=") >= 2) return false;
+  if (tmp.size() > 13) return false;
   price = tmp.empty()? -1:std::stold(tmp);
   return true;
 }

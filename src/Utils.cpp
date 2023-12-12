@@ -44,6 +44,7 @@ void Invalid()
 
 vector<string> SplitKeyword(const string &s)
 {
+  if (s.empty()) return {""};
   vector<string> ret;
   string tmp;
   for (const auto &i: s)

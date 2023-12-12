@@ -174,5 +174,8 @@ int BookSystem::Create(const string &code)
   BookInfo new_book(code);
   book.Write(num, new_book);
   code_map.Insert({GetHash(code), num});
+  author_map.Insert({GetHash(""), num});
+  keyword_map.Insert({GetHash(""), num});
+  name_map.Insert({GetHash(""), num});
   return num;
 }
