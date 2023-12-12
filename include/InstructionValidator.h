@@ -18,7 +18,7 @@ namespace regex
 {
   const string user_id = "([A-Za-z0-9_]{1,30})";
   const string password = "([A-Za-z0-9_]{1,30})";
-  const string current_password = "([A-Za-z0-9_]{1,30}\\s+)?";
+  const string current_password = "([A-Za-z0-9_]{1,30} +)?";
   const string new_password = "([A-Za-z0-9_]{1,30})";
   const string privilege = "(1|3|7)";
   const string username = "([!-~]{1,30})";
@@ -35,12 +35,12 @@ namespace regex
 // Notice: No check for maximum of count
   const string count = "(\\d{1,10})";
   const string book_info_show =
-          "(-ISBN=" + ISBN + "\\s+|-name=" + book_name +
-          "\\s+|-author=" + author + "\\s+|-keyword=" + keyword + "\\s+)";
+          "(-ISBN=" + ISBN + " +|-name=" + book_name +
+          " +|-author=" + author + " +|-keyword=" + keyword + " +)";
   const string book_info_price =
-          "(-ISBN=" + ISBN + "\\s+|-name=" + book_name +
-          "\\s+|-author=" + author + "\\s+|-keyword=" + keywords +
-          "\\s+|-price=" + price + "\\s+)";
+          "(-ISBN=" + ISBN + " +|-name=" + book_name +
+          " +|-author=" + author + " +|-keyword=" + keywords +
+          " +|-price=" + price + " +)";
 
   const string quit = GetInstruction({"quit|exit"});
   const string su = GetInstruction({"su", user_id, GetOptional(password)});

@@ -36,10 +36,10 @@ string GetMultiple(const string &s)
 string GetInstruction(const std::initializer_list<string> &s,
                       bool suffix_space)
 {
-  string ret = "\\s*";
+  string ret = " *";
   for (const auto &str: s)
   {
-    ret += str + "\\s+";
+    ret += str + " +";
   }
   if (suffix_space)
   {
@@ -48,7 +48,7 @@ string GetInstruction(const std::initializer_list<string> &s,
   }
   else
   {
-    ret.pop_back(), ret.pop_back(), ret.pop_back();
+    ret.pop_back(), ret.pop_back();
   }
   return ret;
 }
