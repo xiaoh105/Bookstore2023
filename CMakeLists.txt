@@ -12,18 +12,10 @@ include_directories(include)
 
 add_executable(code
         src/main.cpp
-        include/FileReader.h
-        include/FileMap.h
-        include/Utils.h
         src/Utils.cpp
         src/InstructionValidator.cpp
-        include/InstructionValidator.h
         src/BookSystem.cpp
-        include/BookSystem.h
         src/UserSystem.cpp
-        include/UserSystem.h
         src/Log.cpp
-        include/Log.h
         src/Executor.cpp
-        include/Executor.h
         src/FileMap.cpp)
