@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <title>书店管理系统</title>
+  <link rel="stylesheet" href="../static/node_modules/bootstrap/dist/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-secondary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/static">书店管理系统</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#NavToggler">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="NavToggler">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/static">书籍查询</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/Users">用户操作</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/Report">工作报表</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" role="button" data-bs-toggle="modal" data-bs-target="#LoginModal">登录/注册</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="modal fade" id="LoginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-hidden="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">登录</h1>
+      </div>
+      <div class="modal-body">
+        <form action="/Login" method="post">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="LoginID" placeholder="root">
+            <label for="LoginID">用户ID</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="LoginPassword" placeholder="FuckBookstore">
+            <label for="LoginPassword">密码</label>
+          </div>
+          <button class="btn btn-primary">登录</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        或者，<span><a class="text-primary" role="button" onclick="LoadRegister()"><u>注册</u></a>一个新账号</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="RegisterModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-hidden="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">注册</h1>
+      </div>
+      <div class="modal-body">
+        <form action="/Register" method="post">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="RegID" placeholder="root">
+            <label for="RegID">用户ID</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="RegName" placeholder="root">
+            <label for="RegName">用户名</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="RegPassword" placeholder="FuckBookstore">
+            <label for="RegPassword">密码</label>
+          </div>
+          <button class="btn btn-primary">注册</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <form>
+    <div class="row justify-content-center align-items-start">
+      <div class="dropdown col-auto">
+        <button class="btn btn-light dropdown-toggle p-3" data-bs-toggle="dropdown" data-bs-target="#KeyType">ISBN</button>
+        <ul class="dropdown-menu">
+          <li class="dropdown-item" onclick="">书名</li>
+          <li class="dropdown-item">作者</li>
+          <li class="dropdown-item">关键词</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <div class="form-floating col-auto">
+          <input class="form-control form-control-lg" type="text" id="Key" placeholder="1145141919810">
+          <label for="Key">请输入查询内容</label>
+        </div>
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-light p-3">查询</button>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="container-fluid">
+  <div class="accordion">
+    {% for book in books %}
+    {% set id = loop.index %}
+
+    {% endfor %}
+  </div>
+</div>
+<script src="../static/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  var LoginModal = new bootstrap.Modal(document.getElementById('LoginModal'), {keyboard: false});
+  var RegModal = new bootstrap.Modal(document.getElementById('RegisterModal'), {keyboard: false});
+
+  // LoginModal.show();
+
+  function LoadRegister() {
+    LoginModal.hide();
+    RegModal.show();
+  }
+</script>
+</body>
+</html>

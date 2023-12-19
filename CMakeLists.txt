@@ -11,11 +11,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
 include_directories(include)
 
 add_executable(code
-        src/main.cpp
-        src/Utils.cpp
-        src/InstructionValidator.cpp
-        src/BookSystem.cpp
-        src/UserSystem.cpp
-        src/Log.cpp
-        src/Executor.cpp
-        src/FileMap.cpp)
+        src/backend/main.cpp
+        src/backend/Utils.cpp
+        src/backend/InstructionValidator.cpp
+        src/backend/BookSystem.cpp
+        src/backend/UserSystem.cpp
+        src/backend/Log.cpp
+        src/backend/Executor.cpp
+        src/backend/FileMap.cpp)
