@@ -79,11 +79,12 @@ bool UserSystem::Login(const string &userid, const string &password,
   return true;
 }
 
-void UserSystem::Register(const string &userid, const string &password,
+bool UserSystem::Register(const string &userid, const string &password,
                           const string &username)
 {
-  if (Find(userid) != npos) { Invalid(); return; }
+  if (Find(userid) != npos) return false;
   Insert(userid, password, Privilege::customer, username);
+  return true;
 }
 
 void UserSystem::Insert(const string &userid, const string &password,

@@ -16,7 +16,7 @@ def get_books():
     books = []
     for i in range(n):
         tmp = proc.stdout.readline().split()
-        tmp[3].replace('|', ',')
+        tmp[3] = tmp[3].replace('|', ',')
         books.append(tmp)
     return books
 
@@ -24,11 +24,12 @@ def get_books():
 @app.route("/")
 def main_page(login_fail=False, register_fail=False):
     login_status = bool(request.args.get("login_fail"))
-    register_status = bool(request.args.get("request_fail"))
-    return render_template("main.html", books=get_books(), login_fail=login_status, register_fail=register_status)
+    register_status = bool(request.args.get("register_fail"))
+    return render_template("main.html", books=get_books(), login_fail=login_status,
+                           register_fail=register_status)
 
 
-@app.route("/login", methods=["post"])
+@app.route("/login", methods=["post", "get"])
 def login_main_page():
     account = request.form.get("login_userid").strip()
     password = request.form.get("login_password").strip()
@@ -37,7 +38,8 @@ def login_main_page():
     result = proc.stdout.readline().split()
     if result[0] == "succeed":
         result[1] = int(result[1])
-        return render_template("login_main.html", books=get_books(), username=result[2], privilege=result[1])
+        return render_template("login_main.html", books=get_books(), username=result[2],
+                               privilege=result[1], password_fail=False)
     else:
         return redirect(url_for("main_page", login_fail=True))
 

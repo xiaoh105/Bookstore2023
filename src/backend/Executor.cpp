@@ -81,9 +81,8 @@ void Executor::listen()
     {
       string userid, password, username;
       Privilege cur_privilege;
-      if (GetRegister(command, userid, password, username))
+      if (GetRegister(command, userid, password, username) && user.Register(userid, password, username))
       {
-        user.Register(userid, password, username);
         cout << "succeed 1 " << username << endl;
         user.Login(userid, password, GetPrivilege(), cur_privilege, username);
         name_stack.push(username);

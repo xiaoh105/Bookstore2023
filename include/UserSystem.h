@@ -46,7 +46,7 @@ class UserSystem
   void Init();
   bool Login(const string &userid, const string &password, Privilege privilege,
              Privilege &cur_privilege, string &username);
-  void Register(const string &userid, const string &password,
+  bool Register(const string &userid, const string &password,
                 const string &username);
   void Passwd(const string &userid, Privilege privilege,
               const string &cur_password, const string &new_password);

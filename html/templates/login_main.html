@@ -3,6 +3,7 @@ variables:
   books(list(list[6])): books to show
   username(string): current username
   privilege(int): privilege of the current account
+  password_fail(bool): whether change password fails
 -->
 <!DOCTYPE html>
 <html lang="ch">
@@ -14,24 +15,24 @@ variables:
 <body>
 <nav class="navbar navbar-expand-lg bg-body-secondary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/static">书店管理系统</a>
+    <a class="navbar-brand" href="/login">书店管理系统</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#NavToggler">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="NavToggler">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/static">书籍查询</a>
+          <a class="nav-link" href="/login">书籍查询</a>
         </li>
         {% if privilege >= 3 %}
-        <li class="nav-item">
-          <a class="nav-link" href="/Users">用户操作</a>
-        </li>
-        {% endif %} 
+          <li class="nav-item">
+            <a class="nav-link" href="/Users">用户操作</a>
+          </li>
+        {% endif %}
         {% if privilege >= 7 %}
-        <li class="nav-item">
-          <a class="nav-link" href="/Report">工作报表</a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/Report">工作报表</a>
+          </li>
         {% endif %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
@@ -54,8 +55,14 @@ variables:
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5">修改密码</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
+        {% if password_fail == True %}
+          <div class="alert alert-danger">
+            原密码错误/新密码不合法，请重新输入
+          </div>
+        {% endif %}
         <form action="/password" method="post">
           <div class="form-floating mb-3">
             <input type="text" class="form-control" id="OriginalPassword" placeholder="root">
@@ -75,7 +82,8 @@ variables:
   <form>
     <div class="row justify-content-center align-items-start">
       <div class="dropdown col-auto">
-        <button id="KeyTypeButton" class="btn btn-light dropdown-toggle p-3" data-bs-toggle="dropdown" data-bs-target="#KeyType">请选择
+        <button id="KeyTypeButton" class="btn btn-light dropdown-toggle p-3" data-bs-toggle="dropdown"
+                data-bs-target="#KeyType">请选择
         </button>
         <ul class="dropdown-menu" id="KeyType">
           <li class="dropdown-item" onclick="SelectISBN()">ISBN</li>
@@ -138,12 +146,15 @@ variables:
   function SelectISBN() {
     document.getElementById("KeyTypeButton").textContent = "ISBN"
   }
+
   function SelectAuthor() {
     document.getElementById("KeyTypeButton").textContent = "作者"
   }
+
   function SelectKeyword() {
     document.getElementById("KeyTypeButton").textContent = "关键词"
   }
+
   function SelectBookName() {
     document.getElementById("KeyTypeButton").textContent = "书名"
   }
