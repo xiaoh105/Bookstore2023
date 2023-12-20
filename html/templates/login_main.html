@@ -146,9 +146,9 @@ variables:
     <div class="btn-group me-2" role="group">
       {% for i in range((books|length - 1) // 50 + 1) %}
         {% if page == i + 1 %}
-          <a class="btn btn-secondary active" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+          <a class="btn btn-outline-secondary active" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
         {% else %}
-          <a class="btn btn-secondary" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+          <a class="btn btn-outline-secondary" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
         {% endif %}
       {% endfor %}
     </div>
