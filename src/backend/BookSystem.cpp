@@ -76,6 +76,7 @@ void BookSystem::Show(const string &code, const string &name,
   }
   for (const auto &i: tmp) ret.push_back(book[i]);
   std::sort(ret.begin(), ret.end());
+  cout << ret.size() << endl;
   for (const auto &i: ret) cout << i;
   if (ret.empty()) cout << endl;
 }

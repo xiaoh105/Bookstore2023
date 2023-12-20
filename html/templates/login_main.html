@@ -1,8 +1,8 @@
 <!--
 variables:
   books(list(list[6])): books to show
-  login_fail(bool): whether login fails
-  register_fail(bool): whether register fails
+  username(string): current username
+  privilege(int): privilege of the current account
 -->
 <!DOCTYPE html>
 <html lang="ch">
@@ -23,83 +23,50 @@ variables:
         <li class="nav-item">
           <a class="nav-link" href="/static">书籍查询</a>
         </li>
+        {% if privilege >= 3 %}
         <li class="nav-item">
           <a class="nav-link" href="/Users">用户操作</a>
         </li>
+        {% endif %} 
+        {% if privilege >= 7 %}
         <li class="nav-item">
           <a class="nav-link" href="/Report">工作报表</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" role="button" data-bs-toggle="modal" data-bs-target="#LoginModal">登录/注册</a>
+        {% endif %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+            {{ username }}
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" role="button" data-bs-toggle="modal" data-bs-target="#PasswordModal">修改密码</a>
+              <a class="dropdown-item" href="/logout">退出登录</a>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>
   </div>
 </nav>
-<div class="modal fade" id="LoginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade" id="PasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-hidden="false">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5">登录</h1>
+        <h1 class="modal-title fs-5">修改密码</h1>
       </div>
       <div class="modal-body">
-        {% if login_fail == True %}
-          <div class="alert alert-danger mb-3" role="alert">
-            账号名/密码错误，请重新输入
-          </div>
-        {% endif %}
-        <form action="/login" method="post">
+        <form action="/password" method="post">
           <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="LoginID" name="login_userid" placeholder="root" required>
-            <label for="LoginID">用户ID</label>
+            <input type="text" class="form-control" id="OriginalPassword" placeholder="root">
+            <label for="OriginalPassword">原密码</label>
           </div>
           <div class="form-floating mb-3">
-            <input type="password" class="form-control" id="LoginPassword" name="login_password" placeholder="FuckBookstore"
-                   required>
-            <label for="LoginPassword">密码</label>
+            <input type="password" class="form-control" id="NewPassword" placeholder="FuckBookstore">
+            <label for="NewPassword">新密码</label>
           </div>
-          <button class="btn btn-primary" type="submit">登录</button>
+          <button class="btn btn-primary" type="submit">修改密码</button>
         </form>
-
-      </div>
-      <div class="modal-footer">
-        或者，<span><a class="text-primary" role="button" onclick="LoadRegister()"><u>注册</u></a>一个新账号</span>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="RegisterModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-     aria-hidden="false">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5">注册</h1>
-      </div>
-      <div class="modal-body">
-        {% if register_fail == True %}
-          <div class="alert alert-danger mb-3" role="alert">
-            账号ID重复/账号密码不合法，请重新输入
-          </div>
-        {% endif %}
-        <form action="/register" method="post">
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="RegID" name="reg_userid" placeholder="root">
-            <label for="RegID">用户ID</label>
-          </div>
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="RegName" name="reg_username" placeholder="root">
-            <label for="RegName">用户名</label>
-          </div>
-          <div class="form-floating mb-3">
-            <input type="password" class="form-control" id="RegPassword" name="reg_password" placeholder="FuckBookstore">
-            <label for="RegPassword">密码</label>
-          </div>
-          <button class="btn btn-primary">注册</button>
-        </form>
-      </div>
-      <div class="modal-footer">
-        或者，<span><a class="text-primary" role="button" onclick="LoadLogin()"><u>登录</u></a>您的账号</span>
       </div>
     </div>
   </div>
@@ -108,8 +75,7 @@ variables:
   <form>
     <div class="row justify-content-center align-items-start">
       <div class="dropdown col-auto">
-        <button id="KeyTypeButton" class="btn btn-light dropdown-toggle p-3" data-bs-toggle="dropdown"
-                data-bs-target="#KeyType">请选择
+        <button id="KeyTypeButton" class="btn btn-light dropdown-toggle p-3" data-bs-toggle="dropdown" data-bs-target="#KeyType">请选择
         </button>
         <ul class="dropdown-menu" id="KeyType">
           <li class="dropdown-item" onclick="SelectISBN()">ISBN</li>
@@ -168,23 +134,16 @@ variables:
 <script>
   var LoginModal = new bootstrap.Modal(document.getElementById('LoginModal'), {keyboard: false});
   var RegModal = new bootstrap.Modal(document.getElementById('RegisterModal'), {keyboard: false});
-  {% if register_fail == True %}
-    RegModal.show()
-  {% else %}
-    LoginModal.show();
-  {% endif %}
+
   function SelectISBN() {
     document.getElementById("KeyTypeButton").textContent = "ISBN"
   }
-
   function SelectAuthor() {
     document.getElementById("KeyTypeButton").textContent = "作者"
   }
-
   function SelectKeyword() {
     document.getElementById("KeyTypeButton").textContent = "关键词"
   }
-
   function SelectBookName() {
     document.getElementById("KeyTypeButton").textContent = "书名"
   }
@@ -192,11 +151,6 @@ variables:
   function LoadRegister() {
     LoginModal.hide();
     RegModal.show();
-  }
-
-  function LoadLogin() {
-    RegModal.hide();
-    LoginModal.show();
   }
 </script>
 </body>

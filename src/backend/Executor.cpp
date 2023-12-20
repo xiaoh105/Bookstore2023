@@ -6,7 +6,7 @@
 #include "UserSystem.h"
 #include "Log.h"
 
-using std::cin;
+using std::cin, std::cout, std::endl;
 
 BookSystem book;
 UserSystem user;
@@ -54,6 +54,8 @@ void Executor::listen()
           book_stack.push(-1);
           id_stack.push(userid);
           ++id_map[userid];
+          cout << "succeed " << static_cast<int>(GetPrivilege()) << " "
+               << name_stack.top() << endl;
         }
       }
       else { Invalid(); }
@@ -78,9 +80,17 @@ void Executor::listen()
     else if (op == "register")
     {
       string userid, password, username;
+      Privilege cur_privilege;
       if (GetRegister(command, userid, password, username))
       {
         user.Register(userid, password, username);
+        cout << "succeed 1 " << username << endl;
+        user.Login(userid, password, GetPrivilege(), cur_privilege, username);
+        name_stack.push(username);
+        p_stack.push(cur_privilege);
+        book_stack.push(-1);
+        id_stack.push(userid);
+        ++id_map[userid];
       }
       else { Invalid(); }
     }
@@ -129,7 +139,7 @@ void Executor::listen()
     {
       string ISBN, name, author, keyword;
       int count;
-      if (GetPrivilege() >= Privilege::customer &&
+      if (GetPrivilege() >= Privilege::tourist &&
           GetShow(command, ISBN, name, author, keyword))
       {
         book.Show(ISBN, name, author, keyword);
