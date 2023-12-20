@@ -19,6 +19,7 @@ class Executor
   stack<int> book_stack;
   stack<string> id_stack;
   unordered_map<string, int> id_map;
+  void PrintInfo();
  public:
   Executor();
   ~Executor() = default;

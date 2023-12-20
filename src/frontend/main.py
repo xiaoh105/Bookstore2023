@@ -1,8 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for
+from jinja2 import Environment
+import subprocess
+
+
+def min_filter(values):
+    return min(values)
+
+
+env = Environment()
+env.filters["min"] = min_filter
 
 app = Flask(__name__, static_folder="../../html/static", template_folder="../../html/templates")
-
-import subprocess
 
 proc = subprocess.Popen("./../../cmake-build-debug/code", stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE, text=True)
@@ -21,6 +29,14 @@ def get_books():
     return books
 
 
+def get_status():
+    proc.stdin.write("info\n")
+    proc.stdin.flush()
+    tmp = proc.stdout.readline().split()
+    tmp[2] = int(tmp[2])
+    return tmp
+
+
 @app.route("/")
 def main_page(login_fail=False, register_fail=False):
     login_status = bool(request.args.get("login_fail"))
@@ -29,7 +45,7 @@ def main_page(login_fail=False, register_fail=False):
                            register_fail=register_status)
 
 
-@app.route("/login", methods=["post", "get"])
+@app.route("/login", methods=["post"])
 def login_main_page():
     account = request.form.get("login_userid").strip()
     password = request.form.get("login_password").strip()
@@ -39,9 +55,37 @@ def login_main_page():
     if result[0] == "succeed":
         result[1] = int(result[1])
         return render_template("login_main.html", books=get_books(), username=result[2],
-                               privilege=result[1], password_fail=False)
+                               privilege=result[1], password_fail=False, password_succeed=False, page=1)
     else:
         return redirect(url_for("main_page", login_fail=True))
+
+
+@app.route("/bookinfo", methods=["get"])
+def show_bookinfo():
+    page = int(request.args.get("page", 1))
+    proc.stdin.write("info\n")
+    proc.stdin.flush()
+    result = proc.stdout.readline().split()
+    result[2] = int(result[2])
+    return render_template("login_main.html", books=get_books(), username=result[1],
+                           privilege=result[2], password_fail=False, password_succeed=False, page=page)
+
+
+@app.route("/login/password", methods=["post"])
+def main_page_change_password():
+    old_password = request.form.get("old_password").strip()
+    new_password = request.form.get("new_password").strip()
+    status=get_status()
+    userid = status[0]
+    proc.stdin.write("passwd " + userid + " " + old_password + " " + new_password + '\n')
+    proc.stdin.flush()
+    result = proc.stdout.readline().strip()
+    if result == "succeed":
+        return render_template("login_main.html", books=get_books(), username=status[1],
+                               privilege=status[2], password_fail=False, password_succeed=True, page=1)
+    else:
+        return render_template("login_main.html", books=get_books(), username=status[1],
+                               privilege=status[2], password_fail=True, password_succeed=False, page=1)
 
 
 @app.route("/register", methods=["post"])
@@ -54,7 +98,8 @@ def register_main_page():
     result = proc.stdout.readline().split()
     if result[0] == "succeed":
         result[1] = int(result[1])
-        return render_template("login_main.html", books=get_books(), username=result[2], privilege=result[1])
+        return render_template("login_main.html", books=get_books(), username=result[2],
+                               privilege=result[1], password_fail=False, password_succeed=False, page=1)
     else:
         return redirect(url_for("main_page", register_fail=True))
 

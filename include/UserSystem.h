@@ -48,7 +48,7 @@ class UserSystem
              Privilege &cur_privilege, string &username);
   bool Register(const string &userid, const string &password,
                 const string &username);
-  void Passwd(const string &userid, Privilege privilege,
+  bool Passwd(const string &userid, Privilege privilege,
               const string &cur_password, const string &new_password);
   void UserAdd(const string &userid, const string &password,
                int privilege, const string &username, Privilege cur_privilege);

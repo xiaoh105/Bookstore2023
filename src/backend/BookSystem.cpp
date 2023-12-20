@@ -78,7 +78,6 @@ void BookSystem::Show(const string &code, const string &name,
   std::sort(ret.begin(), ret.end());
   cout << ret.size() << endl;
   for (const auto &i: ret) cout << i;
-  if (ret.empty()) cout << endl;
 }
 
 int BookSystem::Find(const string &code)

@@ -4,6 +4,8 @@ variables:
   username(string): current username
   privilege(int): privilege of the current account
   password_fail(bool): whether change password fails
+  password_succeed(bool): whether change password succeeds
+  page(int): the current page
 -->
 <!DOCTYPE html>
 <html lang="ch">
@@ -63,13 +65,15 @@ variables:
             原密码错误/新密码不合法，请重新输入
           </div>
         {% endif %}
-        <form action="/password" method="post">
+        <form action="/login/password" method="post">
           <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="OriginalPassword" placeholder="root">
+            <input type="password" class="form-control" id="OriginalPassword" name="old_password" placeholder="root"
+                   required>
             <label for="OriginalPassword">原密码</label>
           </div>
           <div class="form-floating mb-3">
-            <input type="password" class="form-control" id="NewPassword" placeholder="FuckBookstore">
+            <input type="password" class="form-control" id="NewPassword" name="new_password"
+                   placeholder="FuckBookstore" required>
             <label for="NewPassword">新密码</label>
           </div>
           <button class="btn btn-primary" type="submit">修改密码</button>
@@ -94,7 +98,7 @@ variables:
       </div>
       <div class="col-md-6">
         <div class="form-floating col-auto">
-          <input class="form-control form-control-lg" type="text" id="Key" placeholder="1145141919810">
+          <input class="form-control form-control-lg" type="text" id="Key" placeholder="1145141919810" required>
           <label for="Key">请输入查询内容</label>
         </div>
       </div>
@@ -106,19 +110,20 @@ variables:
 </div>
 <div class="container-fluid">
   <div id="BookAccordion" class="accordion">
-    {% for book in books %}
+    {% for i in range([books|length, 50]|min) %}
+      {% set book = books[(page - 1) * 50 + i] %}
       {% set id = loop.index %}
       <div class="accordion-item">
       <h2 class="accordion-header">
         {% if id == 1 %}
           <button class="accordion-button" type="button" data-bs-toggle="collapse"
                   data-bs-target="#BookAccordion{{ id }}">
-            {{ id }}：{{ book[1] }} 作者：{{ book[2] }} ISBN：{{ book[0] }}
+            {{ (page - 1) * 50 + id }}：{{ book[1] }} 作者：{{ book[2] }} ISBN：{{ book[0] }}
           </button>
         {% else %}
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                   data-bs-target="#BookAccordion{{ id }}">
-            {{ id }}：{{ book[1] }} 作者：{{ book[2] }} ISBN：{{ book[0] }}
+            {{ (page - 1) * 50 + id }}：{{ book[1] }} 作者：{{ book[2] }} ISBN：{{ book[0] }}
           </button>
         {% endif %}
       </h2>
@@ -137,31 +142,56 @@ variables:
     {% endfor %}
     </div>
   </div>
+  <div class="btn-toolbar justify-content-center" role="toolbar">
+    <div class="btn-group me-2" role="group">
+      {% for i in range((books|length - 1) // 50 + 1) %}
+        {% if page == i + 1 %}
+          <a class="btn btn-secondary active" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+        {% else %}
+          <a class="btn btn-secondary" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<div class="toast-container position-absolute top-0 start-50 translate-middle-x">
+  <div class="toast" role="alert" id="PasswordSucceed">
+    <div class="toast-header bg-success-subtle">
+      <strong class="me-auto">提示</strong>
+      <button class="btn-close" type="button" data-bs-dismiss="toast"></button>
+    </div>
+    <div class="toast-body bg-success-subtle">
+      修改密码成功！
+    </div>
+  </div>
 </div>
 <script src="../static/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  var LoginModal = new bootstrap.Modal(document.getElementById('LoginModal'), {keyboard: false});
-  var RegModal = new bootstrap.Modal(document.getElementById('RegisterModal'), {keyboard: false});
+  var PasswordModal = new bootstrap.Modal(document.getElementById('PasswordModal'), {keyboard: false});
+  var PasswordToast = new bootstrap.Toast(document.getElementById('PasswordSucceed'));
+  {% if password_fail == True %}
+    PasswordModal.show();
+  {% elif password_succeed == True %}
+    PasswordToast.show();
+    setTimeout(() => {
+      PasswordToast.hide()
+    }, 3000)
+  {% endif %}
 
   function SelectISBN() {
-    document.getElementById("KeyTypeButton").textContent = "ISBN"
+    document.getElementById("KeyTypeButton").textContent = "ISBN";
   }
 
   function SelectAuthor() {
-    document.getElementById("KeyTypeButton").textContent = "作者"
+    document.getElementById("KeyTypeButton").textContent = "作者";
   }
 
   function SelectKeyword() {
-    document.getElementById("KeyTypeButton").textContent = "关键词"
+    document.getElementById("KeyTypeButton").textContent = "关键词";
   }
 
   function SelectBookName() {
-    document.getElementById("KeyTypeButton").textContent = "书名"
-  }
-
-  function LoadRegister() {
-    LoginModal.hide();
-    RegModal.show();
+    document.getElementById("KeyTypeButton").textContent = "书名";
   }
 </script>
 </body>

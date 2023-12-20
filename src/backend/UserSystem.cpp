@@ -97,30 +97,28 @@ void UserSystem::Insert(const string &userid, const string &password,
   id_map.Insert({GetHash(userid), id});
 }
 
-void UserSystem::Passwd(const string &userid, Privilege privilege,
+bool UserSystem::Passwd(const string &userid, Privilege privilege,
                         const string &cur_password_, const string &new_password)
 {
   int id = Find(userid);
-  if (id == npos) { Invalid(); return; }
+  if (id == npos) return false;
   auto info = user[id];
   auto cur_password(cur_password_);
   while (cur_password.back() == ' ') cur_password.pop_back();
   if (privilege == Privilege::root)
   {
     if (!cur_password.empty() && cur_password != info.password)
-    {
-      Invalid();
-      return;
-    }
+      return false;
   }
   else
   {
-    if (cur_password != info.password) { Invalid(); return; }
+    if (cur_password != info.password) return false;
   }
   for (int i = 0; i < new_password.length(); ++i)
     info.password[i] = new_password[i];
   info.password[new_password.size()] = 0;
   user.Write(id, info);
+  return true;
 }
 
 void UserSystem::UserAdd(const string &userid, const string &password,

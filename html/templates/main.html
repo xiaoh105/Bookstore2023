@@ -84,15 +84,15 @@ variables:
         {% endif %}
         <form action="/register" method="post">
           <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="RegID" name="reg_userid" placeholder="root">
+            <input type="text" class="form-control" id="RegID" name="reg_userid" placeholder="root" required>
             <label for="RegID">用户ID</label>
           </div>
           <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="RegName" name="reg_username" placeholder="root">
+            <input type="text" class="form-control" id="RegName" name="reg_username" placeholder="root" required>
             <label for="RegName">用户名</label>
           </div>
           <div class="form-floating mb-3">
-            <input type="password" class="form-control" id="RegPassword" name="reg_password" placeholder="FuckBookstore">
+            <input type="password" class="form-control" id="RegPassword" name="reg_password" placeholder="FuckBookstore" required>
             <label for="RegPassword">密码</label>
           </div>
           <button class="btn btn-primary">注册</button>
@@ -109,8 +109,7 @@ variables:
     <div class="row justify-content-center align-items-start">
       <div class="dropdown col-auto">
         <button id="KeyTypeButton" class="btn btn-light dropdown-toggle p-3" data-bs-toggle="dropdown"
-                data-bs-target="#KeyType">请选择
-        </button>
+                data-bs-target="#KeyType">请选择</button>
         <ul class="dropdown-menu" id="KeyType">
           <li class="dropdown-item" onclick="SelectISBN()">ISBN</li>
           <li class="dropdown-item" onclick="SelectBookName()">书名</li>
@@ -120,7 +119,7 @@ variables:
       </div>
       <div class="col-md-6">
         <div class="form-floating col-auto">
-          <input class="form-control form-control-lg" type="text" id="Key" placeholder="1145141919810">
+          <input class="form-control form-control-lg" type="text" id="Key" placeholder="1145141919810" required>
           <label for="Key">请输入查询内容</label>
         </div>
       </div>

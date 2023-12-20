@@ -22,6 +22,12 @@ Privilege Executor::GetPrivilege()
   return p_stack.top();
 }
 
+void Executor::PrintInfo()
+{
+  cout << id_stack.top() << " " << name_stack.top()
+       << " " << (int)GetPrivilege() << endl;
+}
+
 void Executor::listen()
 {
   bool flag = true;
@@ -99,7 +105,9 @@ void Executor::listen()
       if (GetPrivilege() >= Privilege::customer &&
           GetPassword(command, userid, cur_password, new_password))
       {
-        user.Passwd(userid, GetPrivilege(), cur_password, new_password);
+        if (user.Passwd(userid, GetPrivilege(), cur_password, new_password))
+          cout << "succeed" << endl;
+        else Invalid();
       }
       else { Invalid(); }
     }
@@ -216,6 +224,10 @@ void Executor::listen()
         }
       }
       else { Invalid(); }
+    }
+    else if (op == "info")
+    {
+      PrintInfo();
     }
     else
     {
