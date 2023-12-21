@@ -38,11 +38,21 @@ def get_status():
 
 
 @app.route("/")
-def main_page(login_fail=False, register_fail=False):
+def main_page():
     login_status = bool(request.args.get("login_fail"))
     register_status = bool(request.args.get("register_fail"))
     return render_template("main.html", books=get_books(), login_fail=login_status,
                            register_fail=register_status)
+
+
+@app.route("/home", methods=["get"])
+def home_page():
+    password_fail = request.args.get("password_fail") == "True"
+    password_succeed = request.args.get("password_succeed") == "True"
+    result = get_status()
+    return render_template("login_main.html", books=get_books(), username=result[1],
+                           privilege=result[2], password_fail=password_fail, password_succeed=password_succeed,
+                           page=1)
 
 
 @app.route("/login", methods=["post"])
@@ -53,9 +63,7 @@ def login_main_page():
     proc.stdin.flush()
     result = proc.stdout.readline().split()
     if result[0] == "succeed":
-        result[1] = int(result[1])
-        return render_template("login_main.html", books=get_books(), username=result[2],
-                               privilege=result[1], password_fail=False, password_succeed=False, page=1)
+        return redirect(url_for("home_page"))
     else:
         return redirect(url_for("main_page", login_fail=True))
 
@@ -71,7 +79,7 @@ def show_bookinfo():
                            privilege=result[2], password_fail=False, password_succeed=False, page=page)
 
 
-@app.route("/login/password", methods=["post"])
+@app.route("/password", methods=["post"])
 def main_page_change_password():
     old_password = request.form.get("old_password").strip()
     new_password = request.form.get("new_password").strip()
@@ -81,11 +89,9 @@ def main_page_change_password():
     proc.stdin.flush()
     result = proc.stdout.readline().strip()
     if result == "succeed":
-        return render_template("login_main.html", books=get_books(), username=status[1],
-                               privilege=status[2], password_fail=False, password_succeed=True, page=1)
+        return redirect(url_for("home_page", password_succeed=True))
     else:
-        return render_template("login_main.html", books=get_books(), username=status[1],
-                               privilege=status[2], password_fail=True, password_succeed=False, page=1)
+        return redirect(url_for("home_page", password_fail=True))
 
 
 @app.route("/register", methods=["post"])
@@ -97,9 +103,7 @@ def register_main_page():
     proc.stdin.flush()
     result = proc.stdout.readline().split()
     if result[0] == "succeed":
-        result[1] = int(result[1])
-        return render_template("login_main.html", books=get_books(), username=result[2],
-                               privilege=result[1], password_fail=False, password_succeed=False, page=1)
+        return redirect(url_for("home_page"))
     else:
         return redirect(url_for("main_page", register_fail=True))
 
