@@ -28,7 +28,7 @@ variables:
         </li>
         {% if privilege >= 3 %}
           <li class="nav-item">
-            <a class="nav-link" href="/Users">用户操作</a>
+            <a class="nav-link" href="/user">用户操作</a>
           </li>
         {% endif %}
         {% if privilege >= 7 %}
@@ -98,10 +98,10 @@ variables:
           {% endif %}
         </button>
         <ul class="dropdown-menu" id="KeyType">
-          <li class="dropdown-item" onclick="SelectISBN()">ISBN</li>
-          <li class="dropdown-item" onclick="SelectBookName()">书名</li>
-          <li class="dropdown-item" onclick="SelectAuthor()">作者</li>
-          <li class="dropdown-item" onclick="SelectKeyword()">关键词</li>
+          <li><button type="button" class="dropdown-item" onclick="SelectISBN()">ISBN</button></li>
+          <li><button type="button" class="dropdown-item" onclick="SelectBookName()">书名</button></li>
+          <li><button type="button" class="dropdown-item" onclick="SelectAuthor()">作者</button></li>
+          <li><button type="button" class="dropdown-item" onclick="SelectKeyword()">关键词</button></li>
         </ul>
       </div>
       <div class="col-md-6">
@@ -188,16 +188,16 @@ variables:
         <button type="button" class="btn btn-outline-primary" onmousedown="DecreaseBuyCounter({{ id }})"
                 onmouseup="StopBuyCounter()">
           <strong>-</strong></button>
-        <input class="form-control text-center" type="text" value=1 oninput="ValidateNumber(this)"
+        <input class="form-control text-center" type="text" value=1 oninput="ValidateNumber({{ id }})"
                id="buy_num{{ id }}">
         <button type="button" class="btn btn-outline-primary" onmousedown="AddBuyCounter({{ id }})"
                 onmouseup="StopBuyCounter()">
           <strong>+</strong></button>
       </div>
       {% if book[5] > 0 %}
-        <button class="btn btn-primary" onclick="ShowBuyModal({{ id }})">购买</button>
+        <button class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})">购买</button>
       {% else %}
-        <button class="btn btn-primary disabled" onclick="ShowBuyModal({{ id }})">购买</button>
+        <button class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})" disabled>购买</button>
       {% endif %}
     </div>
     </div>
@@ -285,15 +285,16 @@ variables:
   const BuyModal = new bootstrap.Modal(document.getElementById('BuyModal'));
   const SearchForm = document.getElementById("search_form");
   const SearchButton = document.getElementById("search_button");
-  let search_type = null;
+  let search_type = "{{ type }}";
   let interval_id = null;
 
+  const SearchType = document.createElement("input");
+  SearchType.setAttribute("type", "hidden");
+  SearchType.setAttribute("name", "search_type");
+  SearchForm.appendChild(SearchType);
+
   SearchForm.addEventListener("submit", function (event) {
-    const SearchType = document.createElement("input");
-    SearchType.setAttribute("type", "hidden");
-    SearchType.setAttribute("name", "search_type");
     SearchType.setAttribute("value", search_type);
-    SearchForm.appendChild(SearchType);
   })
 
   function SelectISBN() {
@@ -313,12 +314,23 @@ variables:
 
   function SelectBookName() {
     document.getElementById("KeyTypeButton").textContent = "书名";
-    search_type = "name"
+    search_type = "name";
   }
 
-  function ValidateNumber(input) {
+  function ValidateNumber(id) {
     const nonNumericRegex = /[^0-9]/g;
+    let input = document.getElementById("buy_num" + id);
     input.value = input.value.replace(nonNumericRegex, '');
+    let tmp = parseInt(input.value);
+    let limit = parseInt(document.getElementById("book_stock" + id).value);
+    let buy_button = document.getElementById("buy_button" + id);
+    if (tmp > limit) {
+      buy_button.disabled = true;
+    }
+    else
+    {
+      if (limit >= 1) buy_button.disabled = false;
+    }
   }
 
   function AddBuyCounter(id) {

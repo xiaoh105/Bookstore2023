@@ -133,6 +133,7 @@ void UserSystem::UserAdd(const string &userid, const string &password,
   int id = Find(userid);
   if (id != npos) { Invalid(); return; }
   Insert(userid, password, static_cast<Privilege>(privilege), username);
+  std::cout << "succeed" << std::endl;
 }
 
 void UserSystem::Delete(const string &userid)

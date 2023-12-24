@@ -172,5 +172,29 @@ def search_book():
                            page=page, type=type_, content=content)
 
 
+@app.route("/user", methods=["get"])
+def manage_user():
+    result = get_status()
+    fail = bool(request.args.get("fail"))
+    succeed = bool(request.args.get("succeed"))
+    return render_template("user.html", username=result[1], privilege=result[2], fail=fail,
+                           succeed=succeed)
+
+
+@app.route("/useradd", methods=["post"])
+def add_user():
+    userid = request.form.get("user_id")
+    username = request.form.get("username")
+    privilege = request.form.get("privilege")
+    password = request.form.get("password")
+    proc.stdin.write("useradd " + userid + ' ' + password + ' ' + privilege + ' ' + username + '\n')
+    proc.stdin.flush()
+    res = proc.stdout.readline().split()
+    if res[0] == "succeed":
+        return redirect(url_for("manage_user", succeed=True))
+    else:
+        return redirect(url_for("manage_user", fail=True))
+
+
 if __name__ == '__main__':
     app.run(debug=True)

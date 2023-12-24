@@ -2,6 +2,8 @@
 variables:
   username(string): current username
   privilege(int): current privilege
+  fail(bool): whether useradd fails
+  succeed(bool): whether useradd succeeds
 -->
 <!DOCTYPE html>
 <html lang="ch">
@@ -20,11 +22,11 @@ variables:
     <div class="collapse navbar-collapse" id="NavToggler">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active" href="/home">书籍查询</a>
+          <a class="nav-link" href="/home">书籍查询</a>
         </li>
         {% if privilege >= 3 %}
           <li class="nav-item">
-            <a class="nav-link" href="/user">用户操作</a>
+            <a class="nav-link active" href="/user">用户操作</a>
           </li>
         {% endif %}
         {% if privilege >= 7 %}
@@ -77,54 +79,73 @@ variables:
     </div>
   </div>
 </div>
-<div class="container-fluid justify-content-center">
-  <h2 class="text-center">购买详情</h2>
-  <div class="row justify-content-center">
+<div class="container-fluid">
+  <form action="/useradd" method="post">
+    <h2 class="text-center">创建账户</h2>
+    {% if fail %}
+    	<div class="alert alert-danger">用户ID重复/权限不足，请重新输入</div>
+    {% endif %}
     <div class="row">
-      <label for="buy_book_name" class="col-sm-2 col-form-label">书名</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="buy_book_name" value="{{ book_name }}" disabled
-               readonly>
+      <div class="form-floating my-3 col-md-8">
+        <input class="form-control form-control-lg" name="user_id" type="text" id="UserID"
+               placeholder="1145141919810" required>
+        <label for="UserID">用户ID</label>
       </div>
     </div>
-    <div class="row justify-content-center">
-      <label for="buy_book_isbn" class="col-sm-2 col-form-label">ISBN</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="buy_book_isbn" value="{{ book_isbn }}" disabled
-               readonly>
+    <div class="row">
+      <div class="form-floating my-3 col-md-8">
+        <input class="form-control form-control-lg" name="username" type="text" id="UserName"
+               placeholder="1145141919810" required>
+        <label for="UserName">用户名</label>
       </div>
     </div>
-    <div class="row justify-content-center">
-      <label for="buy_book_author" class="col-sm-2 col-form-label">作者</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="buy_book_author" value="{{ book_author }}" disabled
-               readonly>
+    <div class="row">
+      <h5 class="my-3 col-md-8">权限</h5>
+      <div class="btn-group col-md-8" role="group">
+        <input type="radio" class="btn-check" id="privilege_customer" name="privilege" value="1" autocomplete="off"
+               checked>
+        <label class="btn btn-outline-secondary" for="privilege_customer">顾客</label>
+        <input type="radio" class="btn-check" id="privilege_employee" name="privilege" value="3" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="privilege_employee">店员</label>
       </div>
     </div>
-    <div class="row justify-content-center">
-      <label for="buy_book_key" class="col-sm-2 col-form-label">关键词</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="buy_book_key" value="{{ book_key }}" disabled
-               readonly>
+    <div class="row">
+      <div class="form-floating my-3 col-md-8">
+        <input class="form-control form-control-lg" name="password" type="password" id="Password"
+               placeholder="1145141919810" required>
+        <label for="Password">密码</label>
       </div>
     </div>
-    <div class="row justify-content-center">
-      <label for="buy_book_price" class="col-sm-2 col-form-label">数量</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="buy_book_num" value="{{ book_num }}" disabled
-               readonly>
+    <div class="btn-toolbar" role="toolbar">
+      <div class="btn-group me-2" role="group">
+        <button type="submit" class="btn btn-primary">创建用户</button>
+      </div>
+      <div class="btn-group me-2" role="group">
+        <button type="reset" class="btn btn-secondary">清空输入</button>
       </div>
     </div>
-    <div class="row justify-content-center">
-      <label for="buy_book_price" class="col-sm-2 col-form-label">总价</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="buy_book_price" value="{{ book_price }}" disabled
-               readonly>
-      </div>
+  </form>
+</div>
+<div class="toast-container position-absolute top-0 start-50 translate-middle-x">
+  <div class="toast" role="alert" id="UseraddSucceed">
+    <div class="toast-header bg-success-subtle">
+      <strong class="me-auto">提示</strong>
+      <button class="btn-close" type="button" data-bs-dismiss="toast"></button>
     </div>
-    <div class="alert alert-success text-center">购买成功！请前往服务台付款。点这里<a href="/home">返回主页</a></div>
+    <div class="toast-body bg-success-subtle">
+      添加用户成功！
+    </div>
   </div>
 </div>
 <script src="../static/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const SucceedModal = new bootstrap.Toast(document.getElementById("UseraddSucceed"))
+  {% if succeed %}
+  	SucceedModal.show();
+    setTimeout(3000, ()=>{
+      SucceedModal.hide();
+    })
+  {% endif %}
+</script>
 </body>
 </html>
