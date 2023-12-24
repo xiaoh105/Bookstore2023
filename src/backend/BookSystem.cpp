@@ -101,6 +101,7 @@ void BookSystem::Buy(const string &code, int quantity)
   info.stock -= quantity;
   if (info.stock < 0) { Invalid(); return; }
   book.Write(id, info);
+  cout << "succeed ";
   cout << std::fixed << std::setprecision(2);
   cout << quantity * info.price << endl;
   finance_log.Insert(quantity * info.price);

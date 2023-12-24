@@ -84,7 +84,7 @@ def show_bookinfo():
 def main_page_change_password():
     old_password = request.form.get("old_password").strip()
     new_password = request.form.get("new_password").strip()
-    status=get_status()
+    status = get_status()
     userid = status[0]
     proc.stdin.write("passwd " + userid + " " + old_password + " " + new_password + '\n')
     proc.stdin.flush()
@@ -114,6 +114,34 @@ def logout():
     proc.stdin.write("logout\n")
     proc.stdin.flush()
     return redirect(url_for("main_page"))
+
+
+@app.route("/buy", methods=["post"])
+def buy():
+    isbn = request.form.get("book_isbn")
+    name = request.form.get("book_name")
+    author = request.form.get("book_author")
+    key = request.form.get("book_key")
+    num = request.form.get("book_num")
+    price = request.form.get("book_price")
+    proc.stdin.write("buy " + isbn + " " + num + "\n")
+    proc.stdin.flush()
+    result = proc.stdout.readline().split()
+    return redirect(url_for("buy_result", book_name=name, book_isbn=isbn, book_author=author,
+                     book_key=key, book_num=num, book_price=price))
+
+
+@app.route("/buy_result", methods=["get"])
+def buy_result():
+    isbn = request.args.get("book_isbn")
+    name = request.args.get("book_name")
+    author = request.args.get("book_author")
+    key = request.args.get("book_key")
+    num = request.args.get("book_num")
+    price = request.args.get("book_price")
+    result = get_status()
+    return render_template("buy.html", book_name=name, book_isbn=isbn, book_author=author,
+                           book_key=key, book_num=num, book_price=price, username=result[1], privilege=result[2])
 
 
 if __name__ == '__main__':

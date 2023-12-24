@@ -1,6 +1,7 @@
 <!--
 variables:
   username(string): current username
+  privilege(int): current privilege
   book_name(string)
   book_isbn(string)
   book_author(string)
@@ -83,7 +84,8 @@ variables:
   </div>
 </div>
 <div class="container-fluid justify-content-center">
-  <div class="row">
+  <h2 class="text-center">购买详情</h2>
+  <div class="row justify-content-center">
     <div class="row">
       <label for="buy_book_name" class="col-sm-2 col-form-label">书名</label>
       <div class="col-sm-10">
@@ -91,43 +93,44 @@ variables:
                readonly>
       </div>
     </div>
-    <div class="row">
+    <div class="row justify-content-center">
       <label for="buy_book_isbn" class="col-sm-2 col-form-label">ISBN</label>
       <div class="col-sm-10">
         <input type="text" class="form-control-plaintext" id="buy_book_isbn" value={{ book_isbn }} disabled
                readonly>
       </div>
     </div>
-    <div class="row">
+    <div class="row justify-content-center">
       <label for="buy_book_author" class="col-sm-2 col-form-label">作者</label>
       <div class="col-sm-10">
         <input type="text" class="form-control-plaintext" id="buy_book_author" value={{ book_author }} disabled
                readonly>
       </div>
     </div>
-    <div class="row">
+    <div class="row justify-content-center">
       <label for="buy_book_key" class="col-sm-2 col-form-label">关键词</label>
       <div class="col-sm-10">
         <input type="text" class="form-control-plaintext" id="buy_book_key" value={{ book_keyword }} disabled
                readonly>
       </div>
     </div>
-    <div class="row">
+    <div class="row justify-content-center">
       <label for="buy_book_price" class="col-sm-2 col-form-label">数量</label>
       <div class="col-sm-10">
         <input type="text" class="form-control-plaintext" id="buy_book_num" value={{ book_num }} disabled
                readonly>
       </div>
     </div>
-    <div class="row">
+    <div class="row justify-content-center">
       <label for="buy_book_price" class="col-sm-2 col-form-label">总价</label>
       <div class="col-sm-10">
         <input type="text" class="form-control-plaintext" id="buy_book_price" value={{ book_price }} disabled
                readonly>
       </div>
     </div>
-    <div class="alert alert-success">购买成功！请前往服务台付款。</div>
+    <div class="alert alert-success align-self-center">购买成功！请前往服务台付款。点这里<a href="/main">返回主页</a></div>
   </div>
-  <script src="../static/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+<script src="../static/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

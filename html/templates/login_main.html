@@ -185,75 +185,76 @@ variables:
           <strong>+</strong></button>
       </div>
       {% if book[5] > 0 %}
-      	<button class="btn btn-primary" onclick="ShowBuyModal({{ id }})">购买</button>
+        <button class="btn btn-primary" onclick="ShowBuyModal({{ id }})">购买</button>
       {% else %}
         <button class="btn btn-primary disabled" onclick="ShowBuyModal({{ id }})">购买</button>
       {% endif %}
-
     </div>
     </div>
     </div>
     {% endfor %}
     </div>
   </div>
-  <div class="modal fade" id="BuyModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5">购买书籍</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <label for="buy_book_name" class="col-sm-2 col-form-label">书名</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control-plaintext" id="buy_book_name" value="NAN" disabled
-                     readonly>
+  <form method="post" action="/buy">
+    <div class="modal fade" id="BuyModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">购买书籍</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label for="buy_book_name" class="col-sm-2 col-form-label">书名</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_name" id="buy_book_name" value="NAN"
+                       readonly>
+              </div>
+            </div>
+            <div class="row">
+              <label for="buy_book_isbn" class="col-sm-2 col-form-label">ISBN</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_isbn" id="buy_book_isbn" value="NAN"
+                       readonly>
+              </div>
+            </div>
+            <div class="row">
+              <label for="buy_book_author" class="col-sm-2 col-form-label">作者</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_author" id="buy_book_author" value="NAN"
+                       readonly>
+              </div>
+            </div>
+            <div class="row">
+              <label for="buy_book_key" class="col-sm-2 col-form-label">关键词</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_key" id="buy_book_key" value="NAN"
+                       readonly>
+              </div>
+            </div>
+            <div class="row">
+              <label for="buy_book_price" class="col-sm-2 col-form-label">数量</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_num" id="buy_book_num" value="NAN"
+                       readonly>
+              </div>
+            </div>
+            <div class="row">
+              <label for="buy_book_price" class="col-sm-2 col-form-label">总价</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_price" id="buy_book_price" value="NAN"
+                       readonly>
+              </div>
             </div>
           </div>
-          <div class="row">
-            <label for="buy_book_isbn" class="col-sm-2 col-form-label">ISBN</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control-plaintext" id="buy_book_isbn" value="NAN" disabled
-                     readonly>
-            </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">购买</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
           </div>
-          <div class="row">
-            <label for="buy_book_author" class="col-sm-2 col-form-label">作者</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control-plaintext" id="buy_book_author" value="NAN" disabled
-                     readonly>
-            </div>
-          </div>
-          <div class="row">
-            <label for="buy_book_key" class="col-sm-2 col-form-label">关键词</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control-plaintext" id="buy_book_key" value="NAN" disabled
-                     readonly>
-            </div>
-          </div>
-          <div class="row">
-            <label for="buy_book_price" class="col-sm-2 col-form-label">数量</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control-plaintext" id="buy_book_num" value="NAN" disabled
-                     readonly>
-            </div>
-          </div>
-          <div class="row">
-            <label for="buy_book_price" class="col-sm-2 col-form-label">总价</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control-plaintext" id="buy_book_price" value="NAN" disabled
-                     readonly>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="">购买</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
         </div>
       </div>
     </div>
-  </div>
+  </form>
   <div class="btn-toolbar justify-content-center" role="toolbar">
     <div class="btn-group me-2" role="group">
       {% for i in range((books|length - 1) // 30 + 1) %}
@@ -314,6 +315,16 @@ variables:
   }
 
   function AddBuyCounter(id) {
+    let tmp = document.getElementById("buy_num" + id).value;
+    let price = document.getElementById("book_price" + id).value
+    let ub = document.getElementById("book_stock" + id).value;
+    ub = parseInt(ub)
+    tmp = parseInt(tmp);
+    price = parseFloat(price) / tmp;
+    if (tmp < ub) tmp++;
+    price *= tmp;
+    document.getElementById("buy_num" + id).value = tmp;
+    document.getElementById("book_price" + id).value = price.toFixed(2);
     if (interval_id == null) {
       interval_id = setInterval(() => {
         let tmp = document.getElementById("buy_num" + id).value;
@@ -326,11 +337,19 @@ variables:
         price *= tmp;
         document.getElementById("buy_num" + id).value = tmp;
         document.getElementById("book_price" + id).value = price.toFixed(2);
-      }, 80);
+      }, 100);
     }
   }
 
   function DecreaseBuyCounter(id) {
+    let tmp = document.getElementById("buy_num" + id).value;
+    let price = document.getElementById("book_price" + id).value
+    tmp = parseInt(tmp);
+    price = parseFloat(price) / tmp;
+    if (tmp > 1) tmp--;
+    price *= tmp;
+    document.getElementById("buy_num" + id).value = tmp;
+    document.getElementById("book_price" + id).value = price.toFixed(2);
     if (interval_id == null) {
       interval_id = setInterval(() => {
         let tmp = document.getElementById("buy_num" + id).value;
@@ -341,7 +360,7 @@ variables:
         price *= tmp;
         document.getElementById("buy_num" + id).value = tmp;
         document.getElementById("book_price" + id).value = price.toFixed(2);
-      }, 80);
+      }, 100);
     }
   }
 
