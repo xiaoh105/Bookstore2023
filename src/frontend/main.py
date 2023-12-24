@@ -25,6 +25,7 @@ def get_books():
     for i in range(n):
         tmp = proc.stdout.readline().split()
         tmp[3] = tmp[3].replace('|', ',')
+        tmp[5] = int(tmp[5])
         books.append(tmp)
     return books
 

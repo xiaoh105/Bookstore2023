@@ -21,7 +21,7 @@ variables:
     <div class="collapse navbar-collapse" id="NavToggler">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/static">书籍查询</a>
+          <a class="nav-link active" href="/static">书籍查询</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/Users">用户操作</a>
@@ -55,7 +55,8 @@ variables:
             <label for="LoginID">用户ID</label>
           </div>
           <div class="form-floating mb-3">
-            <input type="password" class="form-control" id="LoginPassword" name="login_password" placeholder="FuckBookstore"
+            <input type="password" class="form-control" id="LoginPassword" name="login_password"
+                   placeholder="FuckBookstore"
                    required>
             <label for="LoginPassword">密码</label>
           </div>
@@ -92,7 +93,8 @@ variables:
             <label for="RegName">用户名</label>
           </div>
           <div class="form-floating mb-3">
-            <input type="password" class="form-control" id="RegPassword" name="reg_password" placeholder="FuckBookstore" required>
+            <input type="password" class="form-control" id="RegPassword" name="reg_password" placeholder="FuckBookstore"
+                   required>
             <label for="RegPassword">密码</label>
           </div>
           <button class="btn btn-primary">注册</button>
@@ -109,7 +111,8 @@ variables:
     <div class="row justify-content-center align-items-start">
       <div class="dropdown col-auto">
         <button id="KeyTypeButton" class="btn btn-light dropdown-toggle p-3" data-bs-toggle="dropdown"
-                data-bs-target="#KeyType">请选择</button>
+                data-bs-target="#KeyType">请选择
+        </button>
         <ul class="dropdown-menu" id="KeyType">
           <li class="dropdown-item" onclick="SelectISBN()">ISBN</li>
           <li class="dropdown-item" onclick="SelectBookName()">书名</li>
@@ -131,7 +134,8 @@ variables:
 </div>
 <div class="container-fluid">
   <div id="BookAccordion" class="accordion">
-    {% for book in books %}
+    {% for i in range([books|length, 30]|min) %}
+      {% set book = books[i] %}
       {% set id = loop.index %}
       <div class="accordion-item">
       <h2 class="accordion-header">
@@ -153,20 +157,74 @@ variables:
         <div id="BookAccordion{{ id }}" class="accordion-collapse collapse" data-bs-parent="#BookAccordion">
       {% endif %}
     <div class="accordion-body bg-secondary-subtle">
-      ISBN：{{ book[0] }} 书名：{{ book[1] }}<br>
-      作者：{{ book[2] }} 关键词：{{ book[3] }}<br>
-      价格：{{ book[4] }} 库存数量：{{ book[5] }}<br>
+      <div class="row">
+        <label for="book_name{{ id }}" class="col-sm-2 col-form-label">书名</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control-plaintext" id="book_name{{ id }}" value="{{ book[1] }}" disabled readonly>
+        </div>
+      </div>
+      <div class="row">
+        <label for="book_isbn{{ id }}" class="col-sm-2 col-form-label">ISBN</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control-plaintext" id="book_isbn{{ id }}" value="{{ book[0] }}" disabled readonly>
+        </div>
+      </div>
+      <div class="row">
+        <label for="book_author{{ id }}" class="col-sm-2 col-form-label">作者</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control-plaintext" id="book_author{{ id }}" value="{{ book[2] }}" disabled readonly>
+        </div>
+      </div>
+      <div class="row">
+        <label for="book_key{{ id }}" class="col-sm-2 col-form-label">关键词</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control-plaintext" id="book_key{{ id }}" value="{{ book[3] }}" disabled readonly>
+        </div>
+      </div>
+      <div class="row">
+        <label for="book_stock{{ id }}" class="col-sm-2 col-form-label">库存数量</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control-plaintext" id="book_stock{{ id }}" value="{{ book[5] }}" disabled readonly>
+        </div>
+      </div>
+      <div class="row">
+        <label for="book_price{{ id }}" class="col-sm-2 col-form-label">价格</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control-plaintext" id="book_price{{ id }}" value="{{ book[4] }}" disabled readonly>
+        </div>
+      </div>
+      <form>
+        <div class="btn-group me-2" role="group">
+          <button type="button" class="btn btn-outline-primary">
+            <strong>-</strong></button>
+          <input class="form-control text-center" type="text" value=1
+                 id="buy_num{{ id }}">
+          <button type="button" class="btn btn-outline-primary">
+            <strong>+</strong></button>
+        </div>
+      </form>
     </div>
     </div>
     </div>
     {% endfor %}
     </div>
   </div>
+  <div class="btn-toolbar justify-content-center" role="toolbar">
+    <div class="btn-group me-2" role="group">
+      {% for i in range((books|length - 1) // 30 + 1) %}
+        {% if page == 1 %}
+          <a class="btn btn-outline-secondary active" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+        {% else %}
+          <a class="btn btn-outline-secondary" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
 </div>
 <script src="../static/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  var LoginModal = new bootstrap.Modal(document.getElementById('LoginModal'), {keyboard: false});
-  var RegModal = new bootstrap.Modal(document.getElementById('RegisterModal'), {keyboard: false});
+  let LoginModal = new bootstrap.Modal(document.getElementById('LoginModal'), {keyboard: false});
+  let RegModal = new bootstrap.Modal(document.getElementById('RegisterModal'), {keyboard: false});
   {% if register_fail == True %}
     RegModal.show()
   {% else %}
