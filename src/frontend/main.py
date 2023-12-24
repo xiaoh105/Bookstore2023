@@ -30,6 +30,23 @@ def get_books():
     return books
 
 
+def search_books(type_, content):
+    if type_ == "ISBN":
+        proc.stdin.write("show -ISBN=" + content + "\n")
+    else:
+        proc.stdin.write("show -" + type_ + "=\"" + content + "\"\n")
+    proc.stdin.flush()
+    n = proc.stdout.readline()
+    n = int(n)
+    books = []
+    for i in range(n):
+        tmp = proc.stdout.readline().split()
+        tmp[3] = tmp[3].replace('|', ',')
+        tmp[5] = int(tmp[5])
+        books.append(tmp)
+    return books
+
+
 def get_status():
     proc.stdin.write("info\n")
     proc.stdin.flush()
@@ -142,6 +159,17 @@ def buy_result():
     result = get_status()
     return render_template("buy.html", book_name=name, book_isbn=isbn, book_author=author,
                            book_key=key, book_num=num, book_price=price, username=result[1], privilege=result[2])
+
+
+@app.route("/search", methods=["get"])
+def search_book():
+    type_ = request.args.get("search_type")
+    content = request.args.get("search_content")
+    page = int(request.args.get("page", "1"))
+    result = get_status()
+    books = search_books(type_, content)
+    return render_template("search.html", books=books, username=result[1], privilege=result[2],
+                           page=page, type=type_, content=content)
 
 
 if __name__ == '__main__':

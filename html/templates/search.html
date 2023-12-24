@@ -3,9 +3,9 @@ variables:
   books(list(list[6])): books to show
   username(string): current username
   privilege(int): privilege of the current account
-  password_fail(bool): whether change password fails
-  password_succeed(bool): whether change password succeeds
   page(int): the current page
+  type(string): search type
+  content(string): search content
 -->
 <!DOCTYPE html>
 <html lang="ch">
@@ -86,7 +86,16 @@ variables:
     <div class="row justify-content-center align-items-start">
       <div class="dropdown col-auto">
         <button id="KeyTypeButton" class="btn btn-light dropdown-toggle p-3" data-bs-toggle="dropdown"
-                data-bs-target="#KeyType">请选择
+                data-bs-target="#KeyType">
+          {% if type == "ISBN" %}
+            ISBN
+          {% elif type == "name" %}
+            书名
+          {% elif type == "author" %}
+            作者
+          {% elif type == "keyword" %}
+            关键词
+          {% endif %}
         </button>
         <ul class="dropdown-menu" id="KeyType">
           <li class="dropdown-item" onclick="SelectISBN()">ISBN</li>
@@ -97,12 +106,13 @@ variables:
       </div>
       <div class="col-md-6">
         <div class="form-floating col-auto">
-          <input class="form-control form-control-lg" name="search_content" type="text" id="Key" placeholder="1145141919810" required>
+          <input class="form-control form-control-lg" name="search_content" type="text" id="Key"
+                 placeholder="1145141919810" value={{ content }} required>
           <label for="Key">请输入查询内容</label>
         </div>
       </div>
       <div class="col-auto">
-        <button type="submit" class="btn btn-light p-3" id="search_button" disabled>查询</button>
+        <button type="submit" class="btn btn-light p-3" id="search_button">查询</button>
       </div>
     </div>
   </form>
@@ -259,45 +269,26 @@ variables:
     <div class="btn-group me-2" role="group">
       {% for i in range((books|length - 1) // 30 + 1) %}
         {% if page == i + 1 %}
-          <a class="btn btn-outline-secondary active" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+          <a class="btn btn-outline-secondary active" role="button"
+             href="/bookinfo?search_type={{ type }}&search_content={{ content }}&page={{ i + 1 }}">{{ i + 1 }}</a>
         {% else %}
-          <a class="btn btn-outline-secondary" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+          <a class="btn btn-outline-secondary" role="button"
+             href="/bookinfo?search_type={{ type }}&search_content={{ content }}&page={{ i + 1 }}">{{ i + 1 }}</a>
         {% endif %}
       {% endfor %}
-    </div>
-  </div>
-</div>
-<div class="toast-container position-absolute top-0 start-50 translate-middle-x">
-  <div class="toast" role="alert" id="PasswordSucceed">
-    <div class="toast-header bg-success-subtle">
-      <strong class="me-auto">提示</strong>
-      <button class="btn-close" type="button" data-bs-dismiss="toast"></button>
-    </div>
-    <div class="toast-body bg-success-subtle">
-      修改密码成功！
     </div>
   </div>
 </div>
 <script src="../static/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   const PasswordModal = new bootstrap.Modal(document.getElementById('PasswordModal'), {keyboard: false});
-  const PasswordToast = new bootstrap.Toast(document.getElementById('PasswordSucceed'));
   const BuyModal = new bootstrap.Modal(document.getElementById('BuyModal'));
   const SearchForm = document.getElementById("search_form");
   const SearchButton = document.getElementById("search_button");
   let search_type = null;
   let interval_id = null;
 
-  {% if password_fail == True %}
-    PasswordModal.show();
-  {% elif password_succeed == True %}
-    PasswordToast.show();
-    setTimeout(() => {
-      PasswordToast.hide();
-    }, 3000)
-  {% endif %}
-
-  SearchForm.addEventListener("submit", function(event) {
+  SearchForm.addEventListener("submit", function (event) {
     const SearchType = document.createElement("input");
     SearchType.setAttribute("type", "hidden");
     SearchType.setAttribute("name", "search_type");
@@ -308,25 +299,21 @@ variables:
   function SelectISBN() {
     document.getElementById("KeyTypeButton").textContent = "ISBN";
     search_type = "ISBN";
-    SearchButton.disabled = false;
   }
 
   function SelectAuthor() {
     document.getElementById("KeyTypeButton").textContent = "作者";
     search_type = "author";
-    SearchButton.disabled = false;
   }
 
   function SelectKeyword() {
     document.getElementById("KeyTypeButton").textContent = "关键词";
     search_type = "keyword";
-    SearchButton.disabled = false;
   }
 
   function SelectBookName() {
     document.getElementById("KeyTypeButton").textContent = "书名";
     search_type = "name"
-    SearchButton.disabled = false;
   }
 
   function ValidateNumber(input) {
