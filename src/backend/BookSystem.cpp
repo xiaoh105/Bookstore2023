@@ -167,6 +167,7 @@ void BookSystem::Import(int id, int quantity, long double total_cost)
   info.stock += quantity;
   book.Write(id, info);
   finance_log.Insert(-total_cost);
+  std::cout << "succeed" << std::endl;
 }
 
 int BookSystem::Create(const string &code)

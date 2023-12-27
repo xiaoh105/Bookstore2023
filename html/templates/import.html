@@ -5,10 +5,6 @@ variables:
   fail(bool): whether useradd fails
   succeed(bool): whether useradd succeeds
   ISBN(string)
-  name(string)
-  author(string)
-  keyword(string)
-  price(string)
 -->
 <!DOCTYPE html>
 <html lang="ch">
@@ -85,10 +81,10 @@ variables:
   </div>
 </div>
 <div class="container-fluid">
-  <form action="/modify" method="post">
-    <h2 class="text-center">书籍修改</h2>
+  <form action="/import_book" method="post">
+    <h2 class="text-center">书籍进货</h2>
     {% if fail %}
-    	<div class="alert alert-danger">修改不合法，请重新输入</div>
+    	<div class="alert alert-danger">进货信息不合法，请重新输入</div>
     {% endif %}
       <div class="form-floating my-3 col-md-8">
         <input class="form-control form-control-lg" name="ISBN" type="text" id="ISBN"
@@ -96,28 +92,18 @@ variables:
         <label for="ISBN">ISBN</label>
       </div>
       <div class="form-floating my-3 col-md-8">
-        <input class="form-control form-control-lg" name="name" type="text" id="BookName"
-               placeholder="1145141919810" value="{{ name }}" required>
-        <label for="BookName">用户名</label>
+        <input class="form-control form-control-lg" name="count" type="number" id="Count"
+               placeholder="1145141919810" required>
+        <label for="Count">进货数量</label>
       </div>
       <div class="form-floating my-3 col-md-8">
-        <input class="form-control form-control-lg" name="author" type="text" id="BookAuthor"
-               placeholder="1145141919810" value="{{ author }}" required>
-        <label for="BookAuthor">作者</label>
-      </div>
-      <div class="form-floating my-3 col-md-8">
-        <input class="form-control form-control-lg" name="keyword" type="text" id="Keyword"
-               placeholder="1145141919810" value="{{ keyword }}" required>
-        <label for="Keyword">关键词，用'|'分隔</label>
-      </div>
-      <div class="form-floating my-3 col-md-8">
-        <input class="form-control form-control-lg" name="price" type="number" id="Price"
-               placeholder="1145141919810" value="{{ price }}" step="0.01" required>
-        <label for="Price">单价</label>
+        <input class="form-control form-control-lg" name="cost" type="number" id="Cost", step="0.01"
+               placeholder="1145141919810" required>
+        <label for="Cost">交易总额</label>
       </div>
     <div class="btn-toolbar" role="toolbar">
       <div class="btn-group me-2" role="group">
-        <button type="submit" class="btn btn-primary">提交修改</button>
+        <button type="submit" class="btn btn-primary">提交进货信息</button>
       </div>
       <div class="btn-group me-2" role="group">
         <button type="reset" class="btn btn-secondary">重置</button>
@@ -126,19 +112,19 @@ variables:
   </form>
 </div>
 <div class="toast-container position-absolute top-0 start-50 translate-middle-x">
-  <div class="toast" role="alert" id="ModifySucceed">
+  <div class="toast" role="alert" id="ImportSucceed">
     <div class="toast-header bg-success-subtle">
       <strong class="me-auto">提示</strong>
       <button class="btn-close" type="button" data-bs-dismiss="toast"></button>
     </div>
     <div class="toast-body bg-success-subtle">
-      修改书籍信息成功！
+      进货信息录入成功！
     </div>
   </div>
 </div>
 <script src="../static/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  const SucceedModal = new bootstrap.Toast(document.getElementById("ModifySucceed"))
+  const SucceedModal = new bootstrap.Toast(document.getElementById("ImportSucceed"))
   {% if succeed %}
   	SucceedModal.show();
     setTimeout(3000, ()=>{

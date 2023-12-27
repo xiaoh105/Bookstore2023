@@ -202,11 +202,13 @@ def modify_page():
     name = request.args.get("name")
     author = request.args.get("author")
     keyword = request.args.get("keyword").replace(",", "|")
-    num = float(request.args.get("num"))
+    num = float(request.args.get("num", "1"))
     price = float(request.args.get("price"))
     price = format(price / num, ".2f")
-    fail = bool(request.form.get("fail"))
-    succeed = bool(request.form.get("succeed"))
+    fail = bool(request.args.get("fail"))
+    succeed = bool(request.args.get("succeed"))
+    proc.stdin.write("select " + ISBN + "\n")
+    proc.stdin.flush()
     result = get_status()
     return render_template("modify.html", ISBN=ISBN, name=name, author=author,
                            price=price, keyword=keyword, fail=fail, succeed=succeed, username=result[1], privilege=result[2])
@@ -219,16 +221,43 @@ def modify():
     author = request.form.get("author")
     keyword = request.form.get("keyword").replace(",", "|")
     price = request.form.get("price")
-    proc.stdin.write('modify -ISBN={} -name="{}" -author="{}" -keyword="{}" -price={}\n'
-                     .format(ISBN, name, author,keyword, price))
+    proc.stdin.write('modify -name="{}" -author="{}" -keyword="{}" -price={}\n'
+                     .format(name, author, keyword, price))
     proc.stdin.flush()
-    info = proc.stdout.readline()
+    info = proc.stdout.readline().strip()
+    print(info)
     if info == "succeed":
-        return redirect(url_for("book", ISBN=ISBN, name=name, author=author, keyword=keyword,
+        return redirect(url_for("modify_page", ISBN=ISBN, name=name, author=author, keyword=keyword,
                                 price=price, succeed="True"))
     else:
-        return redirect(url_for("book", ISBN=ISBN, name=name, author=author, keyword=keyword,
+        return redirect(url_for("modify_page", ISBN=ISBN, name=name, author=author, keyword=keyword,
                                 price=price, fail="True"))
+
+
+@app.route("/import", methods=["get"])
+def import_page():
+    ISBN = request.args.get("ISBN")
+    proc.stdin.write("select " + ISBN + "\n")
+    proc.stdin.flush()
+    result = get_status()
+    succeed = bool(request.args.get("succeed"))
+    fail = bool(request.args.get("fail"))
+    return render_template("import.html", ISBN=ISBN, username=result[1], privilege=result[2],
+                           fail=fail, succeed=succeed)
+
+
+@app.route("/import_book", methods=["post"])
+def import_book():
+    ISBN = request.form.get("ISBN")
+    count = request.form.get("count")
+    cost = request.form.get("cost")
+    proc.stdin.write("import " + count + " " + cost + "\n")
+    proc.stdin.flush()
+    res = proc.stdout.readline().strip()
+    if res == "succeed":
+        return redirect(url_for("import_page", succeed="True", ISBN=ISBN))
+    else:
+        return redirect(url_for("import_page", fail="True", ISBN=ISBN))
 
 
 if __name__ == '__main__':

@@ -141,70 +141,148 @@ variables:
       {% else %}
         <div id="BookAccordion{{ id }}" class="accordion-collapse collapse" data-bs-parent="#BookAccordion">
       {% endif %}
-    <div class="accordion-body bg-secondary-subtle">
-      <div class="row">
-        <label for="book_name{{ id }}" class="col-sm-2 col-form-label">书名</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_name{{ id }}" value="{{ book[1] }}" disabled
-                 readonly>
+    <form action="/book" method="get">
+      <div class="accordion-body bg-secondary-subtle">
+        <div class="row">
+          <label for="book_name{{ id }}" class="col-sm-2 col-form-label">书名</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_name{{ id }}" name="name" value="{{ book[1] }}"
+                   readonly>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <label for="book_isbn{{ id }}" class="col-sm-2 col-form-label">ISBN</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_isbn{{ id }}" value="{{ book[0] }}" disabled
-                 readonly>
+        <div class="row">
+          <label for="book_isbn{{ id }}" class="col-sm-2 col-form-label">ISBN</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_isbn{{ id }}" name="ISBN" value="{{ book[0] }}"
+                   readonly>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <label for="book_author{{ id }}" class="col-sm-2 col-form-label">作者</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_author{{ id }}" value="{{ book[2] }}" disabled
-                 readonly>
+        <div class="row">
+          <label for="book_author{{ id }}" class="col-sm-2 col-form-label">作者</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_author{{ id }}" name="author" value="{{ book[2] }}"
+                   readonly>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <label for="book_key{{ id }}" class="col-sm-2 col-form-label">关键词</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_key{{ id }}" value="{{ book[3] }}" disabled
-                 readonly>
+        <div class="row">
+          <label for="book_key{{ id }}" class="col-sm-2 col-form-label">关键词</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_key{{ id }}" name="keyword" value="{{ book[3] }}"
+                   readonly>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <label for="book_stock{{ id }}" class="col-sm-2 col-form-label">库存数量</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_stock{{ id }}" value="{{ book[5] }}" disabled
-                 readonly>
+        <div class="row">
+          <label for="book_stock{{ id }}" class="col-sm-2 col-form-label">库存数量</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_stock{{ id }}" name="stock" value="{{ book[5] }}"
+                   readonly>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <label for="book_price{{ id }}" class="col-sm-2 col-form-label">价格</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_price{{ id }}" value="{{ book[4] }}" disabled
-                 readonly>
+        <div class="row">
+          <label for="book_price{{ id }}" class="col-sm-2 col-form-label">价格</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_price{{ id }}" name="price" value="{{ book[4] }}"
+                   readonly>
+          </div>
         </div>
+        <div class="btn-group me-2" role="group">
+          <button type="button" class="btn btn-outline-primary" onmousedown="DecreaseBuyCounter({{ id }})"
+                  onmouseup="StopBuyCounter()">
+            <strong>-</strong></button>
+          <input class="form-control text-center" type="text" value=1 oninput="ValidateNumber({{ id }})" name="num"
+                 id="buy_num{{ id }}">
+          <button type="button" class="btn btn-outline-primary" onmousedown="AddBuyCounter({{ id }})"
+                  onmouseup="StopBuyCounter()">
+            <strong>+</strong></button>
+        </div>
+        {% if book[5] > 0 %}
+          <button class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})">购买</button>
+        {% else %}
+          <button class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})" disabled>购买
+          </button>
+        {% endif %}
+        {% if privilege >= 3 %}
+        	<button type="submit" class="btn btn-primary mx-2">修改书籍信息</button>
+        {% endif %}
       </div>
-      <div class="btn-group me-2" role="group">
-        <button type="button" class="btn btn-outline-primary" onmousedown="DecreaseBuyCounter({{ id }})"
-                onmouseup="StopBuyCounter()">
-          <strong>-</strong></button>
-        <input class="form-control text-center" type="text" value=1 oninput="ValidateNumber({{ id }})"
-               id="buy_num{{ id }}">
-        <button type="button" class="btn btn-outline-primary" onmousedown="AddBuyCounter({{ id }})"
-                onmouseup="StopBuyCounter()">
-          <strong>+</strong></button>
-      </div>
-      {% if book[5] > 0 %}
-        <button class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})">购买</button>
-      {% else %}
-        <button class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})" disabled>购买</button>
-      {% endif %}
-    </div>
+    </form>
     </div>
     </div>
     {% endfor %}
     </div>
   </div>
+  <form method="post" action="/buy">
+    <div class="modal fade" id="BuyModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">购买书籍</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <label for="buy_book_name" class="col-sm-2 col-form-label">书名</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_name" id="buy_book_name" value="NAN"
+                       readonly>
+              </div>
+            </div>
+            <div class="row">
+              <label for="buy_book_isbn" class="col-sm-2 col-form-label">ISBN</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_isbn" id="buy_book_isbn" value="NAN"
+                       readonly>
+              </div>
+            </div>
+            <div class="row">
+              <label for="buy_book_author" class="col-sm-2 col-form-label">作者</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_author" id="buy_book_author" value="NAN"
+                       readonly>
+              </div>
+            </div>
+            <div class="row">
+              <label for="buy_book_key" class="col-sm-2 col-form-label">关键词</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_key" id="buy_book_key" value="NAN"
+                       readonly>
+              </div>
+            </div>
+            <div class="row">
+              <label for="buy_book_price" class="col-sm-2 col-form-label">数量</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_num" id="buy_book_num" value="NAN"
+                       readonly>
+              </div>
+            </div>
+            <div class="row">
+              <label for="buy_book_price" class="col-sm-2 col-form-label">总价</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control-plaintext" name="book_price" id="buy_book_price" value="NAN"
+                       readonly>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">购买</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="btn-toolbar justify-content-center" role="toolbar">
+    <div class="btn-group me-2" role="group">
+      {% for i in range((books|length - 1) // 30 + 1) %}
+        {% if page == i + 1 %}
+          <a class="btn btn-outline-secondary active" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+        {% else %}
+          <a class="btn btn-outline-secondary" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
   <form method="post" action="/buy">
     <div class="modal fade" id="BuyModal" tabindex="-1">
       <div class="modal-dialog">

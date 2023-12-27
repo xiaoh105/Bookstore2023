@@ -151,7 +151,8 @@ variables:
         <div class="row">
           <label for="book_author{{ id }}" class="col-sm-2 col-form-label">作者</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control-plaintext" id="book_author{{ id }}" name="author" value="{{ book[2] }}"
+            <input type="text" class="form-control-plaintext" id="book_author{{ id }}" name="author"
+                   value="{{ book[2] }}"
                    readonly>
           </div>
         </div>
@@ -193,7 +194,10 @@ variables:
           </button>
         {% endif %}
         {% if privilege >= 3 %}
-        	<button type="submit" class="btn btn-primary mx-2">修改书籍信息</button>
+          <button type="submit" class="btn btn-primary mx-2">修改书籍信息</button>
+        {% endif %}
+        {% if privilege >= 3 %}
+          <button type="button" class="btn btn-primary mx-2" onclick="ShowImportPage({{ id }})">进货</button>
         {% endif %}
       </div>
     </form>
@@ -262,17 +266,6 @@ variables:
       </div>
     </div>
   </form>
-  <div class="btn-toolbar justify-content-center" role="toolbar">
-    <div class="btn-group me-2" role="group">
-      {% for i in range((books|length - 1) // 30 + 1) %}
-        {% if page == i + 1 %}
-          <a class="btn btn-outline-secondary active" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
-        {% else %}
-          <a class="btn btn-outline-secondary" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
-        {% endif %}
-      {% endfor %}
-    </div>
-  </div>
 </div>
 <div class="toast-container position-absolute top-0 start-50 translate-middle-x">
   <div class="toast" role="alert" id="PasswordSucceed">
@@ -292,8 +285,13 @@ variables:
   const BuyModal = new bootstrap.Modal(document.getElementById('BuyModal'));
   const SearchForm = document.getElementById("search_form");
   const SearchButton = document.getElementById("search_button");
+  const ImportForm = document.createElement("form");
   let search_type = null;
   let interval_id = null;
+
+  ImportForm.setAttribute("action", "/import");
+  ImportForm.setAttribute("method", "get");
+  document.body.appendChild(ImportForm)
 
   {% if password_fail == True %}
     PasswordModal.show();
@@ -303,6 +301,18 @@ variables:
       PasswordToast.hide();
     }, 3000)
   {% endif %}
+
+  function ShowImportPage(id) {
+    while (ImportForm.firstChild) {
+      ImportForm.removeChild(ImportForm.firstChild);
+    }
+    const ISBN = document.createElement("input");
+    ISBN.setAttribute("type", "hidden");
+    ISBN.setAttribute("name", "ISBN");
+    ISBN.setAttribute("value", document.getElementById("book_isbn" + id).value);
+    ImportForm.appendChild(ISBN);
+    ImportForm.submit();
+  }
 
   SearchForm.addEventListener("submit", function (event) {
     const SearchType = document.createElement("input");
