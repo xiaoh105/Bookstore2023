@@ -204,6 +204,9 @@ variables:
         {% if privilege >= 3 %}
         	<button type="submit" class="btn btn-primary mx-2">修改书籍信息</button>
         {% endif %}
+      {% if privilege >= 3 %}
+          <button type="button" class="btn btn-primary mx-2" onclick="ShowImportPage({{ id }})">进货</button>
+        {% endif %}
       </div>
     </form>
     </div>
@@ -366,10 +369,27 @@ variables:
   let search_type = "{{ type }}";
   let interval_id = null;
 
+  const ImportForm = document.createElement("form");
+  ImportForm.setAttribute("action", "/import");
+  ImportForm.setAttribute("method", "get");
+  document.body.appendChild(ImportForm)
+
   const SearchType = document.createElement("input");
   SearchType.setAttribute("type", "hidden");
   SearchType.setAttribute("name", "search_type");
   SearchForm.appendChild(SearchType);
+
+  function ShowImportPage(id) {
+    while (ImportForm.firstChild) {
+      ImportForm.removeChild(ImportForm.firstChild);
+    }
+    const ISBN = document.createElement("input");
+    ISBN.setAttribute("type", "hidden");
+    ISBN.setAttribute("name", "ISBN");
+    ISBN.setAttribute("value", document.getElementById("book_isbn" + id).value);
+    ImportForm.appendChild(ISBN);
+    ImportForm.submit();
+  }
 
   SearchForm.addEventListener("submit", function (event) {
     SearchType.setAttribute("value", search_type);
