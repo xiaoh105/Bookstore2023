@@ -196,5 +196,40 @@ def add_user():
         return redirect(url_for("manage_user", fail=True))
 
 
+@app.route("/book", methods=["get"])
+def modify_page():
+    ISBN = request.args.get("ISBN")
+    name = request.args.get("name")
+    author = request.args.get("author")
+    keyword = request.args.get("keyword").replace(",", "|")
+    num = float(request.args.get("num"))
+    price = float(request.args.get("price"))
+    price = format(price / num, ".2f")
+    fail = bool(request.form.get("fail"))
+    succeed = bool(request.form.get("succeed"))
+    result = get_status()
+    return render_template("modify.html", ISBN=ISBN, name=name, author=author,
+                           price=price, keyword=keyword, fail=fail, succeed=succeed, username=result[1], privilege=result[2])
+
+
+@app.route("/modify", methods=["post"])
+def modify():
+    ISBN = request.form.get("ISBN")
+    name = request.form.get("name")
+    author = request.form.get("author")
+    keyword = request.form.get("keyword").replace(",", "|")
+    price = request.form.get("price")
+    proc.stdin.write('modify -ISBN={} -name="{}" -author="{}" -keyword="{}" -price={}\n'
+                     .format(ISBN, name, author,keyword, price))
+    proc.stdin.flush()
+    info = proc.stdout.readline()
+    if info == "succeed":
+        return redirect(url_for("book", ISBN=ISBN, name=name, author=author, keyword=keyword,
+                                price=price, succeed="True"))
+    else:
+        return redirect(url_for("book", ISBN=ISBN, name=name, author=author, keyword=keyword,
+                                price=price, fail="True"))
+
+
 if __name__ == '__main__':
     app.run(debug=True)

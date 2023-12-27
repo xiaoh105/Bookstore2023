@@ -112,7 +112,6 @@ void BookSystem::Modify(int id, const string &ISBN,
                         const string &keyword, long double price)
 {
   auto info = book[id];
-  if (ISBN == info.code) { Invalid(); return; }
   bool flag = true;
   if (!ISBN.empty() && Find(ISBN) != npos) { Invalid(); return; }
   if (!keyword.empty())
@@ -157,6 +156,7 @@ void BookSystem::Modify(int id, const string &ISBN,
   }
   if (price >= 0) info.price = price;
   book.Write(id, info);
+  std::cout << "succeed" << std::endl;
 }
 
 void BookSystem::Import(int id, int quantity, long double total_cost)

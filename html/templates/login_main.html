@@ -132,65 +132,71 @@ variables:
       {% else %}
         <div id="BookAccordion{{ id }}" class="accordion-collapse collapse" data-bs-parent="#BookAccordion">
       {% endif %}
-    <div class="accordion-body bg-secondary-subtle">
-      <div class="row">
-        <label for="book_name{{ id }}" class="col-sm-2 col-form-label">书名</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_name{{ id }}" value="{{ book[1] }}" disabled
-                 readonly>
+    <form action="/book" method="get">
+      <div class="accordion-body bg-secondary-subtle">
+        <div class="row">
+          <label for="book_name{{ id }}" class="col-sm-2 col-form-label">书名</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_name{{ id }}" name="name" value="{{ book[1] }}"
+                   readonly>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <label for="book_isbn{{ id }}" class="col-sm-2 col-form-label">ISBN</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_isbn{{ id }}" value="{{ book[0] }}" disabled
-                 readonly>
+        <div class="row">
+          <label for="book_isbn{{ id }}" class="col-sm-2 col-form-label">ISBN</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_isbn{{ id }}" name="ISBN" value="{{ book[0] }}"
+                   readonly>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <label for="book_author{{ id }}" class="col-sm-2 col-form-label">作者</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_author{{ id }}" value="{{ book[2] }}" disabled
-                 readonly>
+        <div class="row">
+          <label for="book_author{{ id }}" class="col-sm-2 col-form-label">作者</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_author{{ id }}" name="author" value="{{ book[2] }}"
+                   readonly>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <label for="book_key{{ id }}" class="col-sm-2 col-form-label">关键词</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_key{{ id }}" value="{{ book[3] }}" disabled
-                 readonly>
+        <div class="row">
+          <label for="book_key{{ id }}" class="col-sm-2 col-form-label">关键词</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_key{{ id }}" name="keyword" value="{{ book[3] }}"
+                   readonly>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <label for="book_stock{{ id }}" class="col-sm-2 col-form-label">库存数量</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_stock{{ id }}" value="{{ book[5] }}" disabled
-                 readonly>
+        <div class="row">
+          <label for="book_stock{{ id }}" class="col-sm-2 col-form-label">库存数量</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_stock{{ id }}" name="stock" value="{{ book[5] }}"
+                   readonly>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <label for="book_price{{ id }}" class="col-sm-2 col-form-label">价格</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext" id="book_price{{ id }}" value="{{ book[4] }}" disabled
-                 readonly>
+        <div class="row">
+          <label for="book_price{{ id }}" class="col-sm-2 col-form-label">价格</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="book_price{{ id }}" name="price" value="{{ book[4] }}"
+                   readonly>
+          </div>
         </div>
+        <div class="btn-group me-2" role="group">
+          <button type="button" class="btn btn-outline-primary" onmousedown="DecreaseBuyCounter({{ id }})"
+                  onmouseup="StopBuyCounter()">
+            <strong>-</strong></button>
+          <input class="form-control text-center" type="text" value=1 oninput="ValidateNumber({{ id }})" name="num"
+                 id="buy_num{{ id }}">
+          <button type="button" class="btn btn-outline-primary" onmousedown="AddBuyCounter({{ id }})"
+                  onmouseup="StopBuyCounter()">
+            <strong>+</strong></button>
+        </div>
+        {% if book[5] > 0 %}
+          <button class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})">购买</button>
+        {% else %}
+          <button class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})" disabled>购买
+          </button>
+        {% endif %}
+        {% if privilege >= 3 %}
+        	<button type="submit" class="btn btn-primary mx-2">修改书籍信息</button>
+        {% endif %}
       </div>
-      <div class="btn-group me-2" role="group">
-        <button type="button" class="btn btn-outline-primary" onmousedown="DecreaseBuyCounter({{ id }})"
-                onmouseup="StopBuyCounter()">
-          <strong>-</strong></button>
-        <input class="form-control text-center" type="text" value=1 oninput="ValidateNumber({{ id }})"
-               id="buy_num{{ id }}">
-        <button type="button" class="btn btn-outline-primary" onmousedown="AddBuyCounter({{ id }})"
-                onmouseup="StopBuyCounter()">
-          <strong>+</strong></button>
-      </div>
-      {% if book[5] > 0 %}
-        <button class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})">购买</button>
-      {% else %}
-        <button class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})" disabled>购买</button>
-      {% endif %}
-    </div>
+    </form>
     </div>
     </div>
     {% endfor %}
@@ -339,9 +345,7 @@ variables:
     let buy_button = document.getElementById("buy_button" + id);
     if (tmp > limit) {
       buy_button.disabled = true;
-    }
-    else
-    {
+    } else {
       if (limit >= 1) buy_button.disabled = false;
     }
   }
