@@ -2,17 +2,16 @@
 #include "InstructionValidator.h"
 #include "Executor.h"
 #include "Utils.h"
-#include "BookSystem.h"
 #include "UserSystem.h"
 #include "Log.h"
 
 using std::cin, std::cout, std::endl;
 
+EmployeeReport employee_report;
 BookSystem book;
 UserSystem user;
 FinanceLog finance_log;
 FinanceReport finance_report;
-Executor executor;
 
 Executor::Executor():name_stack(), book_stack(), id_map(), id_stack()
 {
@@ -22,6 +21,10 @@ Executor::Executor():name_stack(), book_stack(), id_map(), id_stack()
 Privilege Executor::GetPrivilege()
 {
   return p_stack.top();
+}
+string Executor::GetName()
+{
+  return name_stack.top();
 }
 
 void Executor::PrintInfo()
@@ -237,6 +240,7 @@ void Executor::listen()
       if (GetReport(command, is_finance))
       {
         if (is_finance) { finance_report.Print(); }
+        else { employee_report.Print(); }
       }
     }
     else

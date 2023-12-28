@@ -2,13 +2,14 @@
 #define HOMEWORK5_BOOKSTORE_EXECUTOR_H
 
 #include <stack>
+#include "BookSystem.h"
 #include "UserSystem.h"
 #include "Log.h"
 
-extern FinanceReport finance_report;
-
 using std::stack;
 using std::string;
+
+extern FinanceReport finance_report;
 
 class Executor
 {
@@ -24,6 +25,7 @@ class Executor
   Executor();
   ~Executor() = default;
   Privilege GetPrivilege();
+  string GetName();
   void listen();
 };
 

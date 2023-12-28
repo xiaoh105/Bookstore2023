@@ -3,11 +3,13 @@
 
 #include <fstream>
 #include <vector>
+#include <map>
 #include <unordered_map>
 
 using std::fstream;
 using std::string;
 using std::vector;
+using std::map;
 using std::unordered_map;
 using std::min;
 
@@ -19,7 +21,7 @@ class FileReader
   const static int size = sizeof(T);
   const static int val_per_block = block_size / size;
   const static int block_per_val = (size - 1) / block_size + 1;
-  const static int max_cache_size = 70 * block_size, max_element = 200;
+  const static int max_cache_size = 50 * block_size, max_element = 100;
   const static int cache_size = min(max_element, max_cache_size / size);
   int n;
   int info[info_len + 1];

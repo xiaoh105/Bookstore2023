@@ -2,11 +2,11 @@
 #define HOMEWORK5_BOOKSTORE_LOG_H
 
 #include "FileReader.h"
+#include "FileMap.h"
 
 class FinanceLog
 {
  private:
-  const static int size = 200;
   int num;
   FileReader<long double, 1> info;
 
@@ -47,6 +47,38 @@ class FinanceReport
   ~FinanceReport();
   /// Insert a finance info, cost_ > 0 for outcome
   void Insert(const string &name_, int count_, long double cost_);
+  void Print();
+};
+
+class EmployeeReport;
+
+class EmployeeInfo
+{
+private:
+  friend class EmployeeReport;
+  char name[50];
+  int modify;
+  int import;
+  long double cost;
+public:
+  EmployeeInfo() = default;
+  explicit EmployeeInfo(const string &name_);
+  friend std::ostream &operator<<(std::ostream &os, const EmployeeInfo &info);
+};
+
+class EmployeeReport
+{
+ private:
+  int num;
+  FileReader<EmployeeInfo, 1> info;
+  FileMap mp;
+
+ public:
+  EmployeeReport();
+  ~EmployeeReport();
+  void Insert(const string &name);
+  void RecordModify(const string &name);
+  void RecordImport(const string &name, long double cost);
   void Print();
 };
 

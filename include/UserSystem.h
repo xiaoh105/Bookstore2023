@@ -4,8 +4,11 @@
 #include <string>
 #include "FileReader.h"
 #include "FileMap.h"
+#include "Log.h"
 
 using std::string;
+
+extern EmployeeReport employee_report;
 
 class UserSystem;
 

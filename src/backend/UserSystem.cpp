@@ -95,6 +95,7 @@ void UserSystem::Insert(const string &userid, const string &password,
   UserInfo info(userid, password, username, privilege);
   user.Write(id, info);
   id_map.Insert({GetHash(userid), id});
+  if (privilege >= Privilege::employee) employee_report.Insert(username);
 }
 
 bool UserSystem::Passwd(const string &userid, Privilege privilege,

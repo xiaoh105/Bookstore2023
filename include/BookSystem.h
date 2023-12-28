@@ -2,14 +2,13 @@
 #define HOMEWORK5_BOOKSTORE_BOOKSYSTEM_H
 
 #include <string>
+#include "Executor.h"
 #include "FileMap.h"
 #include "FileReader.h"
 #include "Log.h"
 
 using std::string;
 using std::ostream;
-
-extern FinanceReport finance_report;
 
 class BookSystem;
 

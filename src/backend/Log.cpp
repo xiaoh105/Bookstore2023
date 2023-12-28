@@ -107,3 +107,64 @@ void FinanceReport::Print()
     cout << tmp << endl;
   }
 }
+
+EmployeeInfo::EmployeeInfo(const string &name_):
+modify(), import(), cost(), name()
+{
+  for (int i = 0; i < name_.size(); ++i) name[i] = name_[i];
+  name[name_.size()] = '\0';
+}
+
+std::ostream &operator<<(std::ostream &os, const EmployeeInfo &info)
+{
+  os << info.name << " " << info.modify << " " << info.import << " " << info.cost;
+  return os;
+}
+
+EmployeeReport::EmployeeReport():
+num(), info("EmployeeInfo"), mp("EmployeeIndex")
+{
+  info.GetInfo(1, num);
+}
+
+EmployeeReport::~EmployeeReport()
+{
+  info.WriteInfo(1, num);
+}
+
+void EmployeeReport::Insert(const string &name)
+{
+  num = info.AskId();
+  EmployeeInfo tmp{name};
+  info.Write(num, tmp);
+  mp.Insert({GetHash(name), num});
+}
+
+void EmployeeReport::RecordModify(const string &name)
+{
+  int id = mp.Find(GetHash(name))[0];
+  if (!id) return;
+  auto tmp = info[id];
+  ++tmp.modify;
+  info.Write(id, tmp);
+}
+
+void EmployeeReport::RecordImport(const string &name, long double cost)
+{
+  int id = mp.Find(GetHash(name))[0];
+  if (!id) return;
+  auto tmp = info[id];
+  ++tmp.import;
+  tmp.cost += cost;
+  info.Write(id, tmp);
+}
+
+void EmployeeReport::Print()
+{
+  cout << num << endl;
+  for (int i = 1; i <= num; ++i)
+  {
+    auto tmp = info[i];
+    cout << tmp << endl;
+  }
+}

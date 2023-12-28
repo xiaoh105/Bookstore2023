@@ -158,6 +158,7 @@ void BookSystem::Modify(int id, const string &ISBN,
   if (price >= 0) info.price = price;
   book.Write(id, info);
   std::cout << "succeed" << std::endl;
+  employee_report.RecordModify(executor.GetName());
 }
 
 void BookSystem::Import(int id, int quantity, long double total_cost)
@@ -170,6 +171,7 @@ void BookSystem::Import(int id, int quantity, long double total_cost)
   finance_log.Insert(-total_cost);
   std::cout << "succeed" << std::endl;
   finance_report.Insert(info.name, quantity, total_cost);
+  employee_report.RecordImport(executor.GetName(), total_cost);
 }
 
 int BookSystem::Create(const string &code)
