@@ -173,15 +173,17 @@ void EmployeeReport::Print()
   }
 }
 
-LogInfo::LogInfo(const string &info_): info()
+LogInfo::LogInfo(const string &info_, const string &user_): info(), user()
 {
   for (int i = 0; i < info_.size(); ++i) info[i] = info_[i];
   info[info_.size()] = '\0';
+  for (int i = 0; i < user_.size(); ++i) user[i] = user_[i];
+  user[user_.size()] = '\0';
 }
 
 std::ostream &operator<<(std::ostream &os, const LogInfo &info)
 {
-  os << info.info;
+  os << info.user << "$$$" << info.info;
   return os;
 }
 
@@ -195,10 +197,10 @@ Log::~Log()
   info.WriteInfo(1, num);
 }
 
-void Log::Insert(const string &info_)
+void Log::Insert(const string &user, const string &info_)
 {
   num = info.AskId();
-  info.Write(num, LogInfo(info_));
+  info.Write(num, LogInfo(info_, user));
 }
 
 void Log::Print()

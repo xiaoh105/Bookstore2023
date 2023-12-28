@@ -324,7 +324,7 @@ def log():
     cnt = int(proc.stdout.readline().strip())
     log_ = []
     for i in range(cnt):
-        log_.append(proc.stdout.readline().strip())
+        log_.append(proc.stdout.readline().split("$$$"))
     result = get_status()
     return render_template("log.html", username=result[1], privilege=result[2], log=log_)
 

@@ -102,7 +102,7 @@ void Executor::listen()
         book_stack.push(-1);
         id_stack.push(userid);
         ++id_map[userid];
-        log.Insert("User " + username + " registered.");
+        log.Insert(username, "Registered.");
       }
       else { Invalid(); }
     }
@@ -115,7 +115,7 @@ void Executor::listen()
         if (user.Passwd(userid, GetPrivilege(), cur_password, new_password))
         {
           cout << "succeed" << endl;
-          log.Insert("User " + GetName() + " changed password.");
+          log.Insert(GetName(), "Changed password.");
         }
         else Invalid();
       }

@@ -90,10 +90,11 @@ class LogInfo
  private:
   friend class Log;
   char info[100];
+  char user[35];
 
  public:
   LogInfo() = default;
-  explicit LogInfo(const string &info_);
+  explicit LogInfo(const string &info_, const string &user);
   friend std::ostream &operator<<(std::ostream &os, const LogInfo &info);
 };
 
@@ -106,7 +107,7 @@ class Log
  public:
   Log();
   ~Log();
-  void Insert(const string &info_);
+  void Insert(const string &info_, const string &user);
   void Print();
 };
 

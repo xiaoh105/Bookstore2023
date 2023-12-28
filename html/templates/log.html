@@ -94,6 +94,7 @@ variables:
     </tr>
     <tr>
       <th>编号</th>
+      <th>操作者</th>
       <th>日志</th>
     </tr>
     </thead>
@@ -101,7 +102,8 @@ variables:
     {% for info in log %}
       <tr>
         <td>{{ loop.index }}</td>
-        <td>{{ info }}</td>
+        <td>{{ info[0] }}</td>
+        <td>{{ info[1] }}</td>
       </tr>
     {% endfor %}
     </tbody>

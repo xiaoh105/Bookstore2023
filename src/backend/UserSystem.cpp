@@ -136,7 +136,7 @@ void UserSystem::UserAdd(const string &userid, const string &password,
   if (id != npos) { Invalid(); return; }
   Insert(userid, password, static_cast<Privilege>(privilege), username);
   std::cout << "succeed" << std::endl;
-  log.Insert(executor.GetName() + " add user " + username
+  log.Insert(executor.GetName(), "Add user " + username
                   + " with privilege " + std::to_string(privilege) + ".");
 }
 
@@ -144,7 +144,7 @@ void UserSystem::Delete(const string &userid)
 {
   int id = Find(userid);
   if (id == npos) { Invalid(); return; }
-  log.Insert(string("root delete user ") + user[id].username + ".");
+  log.Insert("root", string("Delete user ") + user[id].username + ".");
   user.Del(id);
   id_map.Remove({GetHash(userid), id});
 }
