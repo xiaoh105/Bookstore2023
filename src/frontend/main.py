@@ -317,5 +317,17 @@ def add_book():
         return redirect(url_for("add_page", fail="True"))
 
 
+@app.route("/log")
+def log():
+    proc.stdin.write("log\n")
+    proc.stdin.flush()
+    cnt = int(proc.stdout.readline().strip())
+    log_ = []
+    for i in range(cnt):
+        log_.append(proc.stdout.readline().strip())
+    result = get_status()
+    return render_template("log.html", username=result[1], privilege=result[2], log=log_)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
