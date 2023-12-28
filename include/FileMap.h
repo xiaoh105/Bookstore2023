@@ -56,7 +56,7 @@ class FileMap
  public:
   int root;
   FileMap() = delete;
-  explicit FileMap(string);
+  explicit FileMap(string name);
   ~FileMap();
   void Insert(const Key &key);
   void Remove(const Key &key);
