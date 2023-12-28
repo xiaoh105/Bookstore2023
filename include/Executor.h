@@ -5,7 +5,7 @@
 #include "UserSystem.h"
 #include "Log.h"
 
-extern FinanceLog finance_log;
+extern FinanceReport finance_report;
 
 using std::stack;
 using std::string;
@@ -27,5 +27,6 @@ class Executor
   void listen();
 };
 
+extern Executor executor;
 
 #endif //HOMEWORK5_BOOKSTORE_EXECUTOR_H

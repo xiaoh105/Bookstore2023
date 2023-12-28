@@ -11,6 +11,8 @@ using std::cin, std::cout, std::endl;
 BookSystem book;
 UserSystem user;
 FinanceLog finance_log;
+FinanceReport finance_report;
+Executor executor;
 
 Executor::Executor():name_stack(), book_stack(), id_map(), id_stack()
 {
@@ -228,6 +230,14 @@ void Executor::listen()
     else if (op == "info")
     {
       PrintInfo();
+    }
+    else if (op == "report")
+    {
+      bool is_finance;
+      if (GetReport(command, is_finance))
+      {
+        if (is_finance) { finance_report.Print(); }
+      }
     }
     else
     {

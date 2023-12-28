@@ -6,10 +6,10 @@
 #include "FileReader.h"
 #include "Log.h"
 
-extern FinanceLog finance_log;
-
 using std::string;
 using std::ostream;
+
+extern FinanceReport finance_report;
 
 class BookSystem;
 

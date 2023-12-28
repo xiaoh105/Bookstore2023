@@ -105,6 +105,7 @@ void BookSystem::Buy(const string &code, int quantity)
   cout << std::fixed << std::setprecision(2);
   cout << quantity * info.price << endl;
   finance_log.Insert(quantity * info.price);
+  finance_report.Insert(info.name, quantity, -quantity * info.price);
 }
 
 void BookSystem::Modify(int id, const string &ISBN,
@@ -168,6 +169,7 @@ void BookSystem::Import(int id, int quantity, long double total_cost)
   book.Write(id, info);
   finance_log.Insert(-total_cost);
   std::cout << "succeed" << std::endl;
+  finance_report.Insert(info.name, quantity, total_cost);
 }
 
 int BookSystem::Create(const string &code)
