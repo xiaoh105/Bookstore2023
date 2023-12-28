@@ -260,5 +260,24 @@ def import_book():
         return redirect(url_for("import_page", fail="True", ISBN=ISBN))
 
 
+@app.route("/finance")
+def report_finance():
+    result = get_status()
+    proc.stdin.write("report finance\n")
+    proc.stdin.flush()
+    in_total, out_total = proc.stdout.readline().split()
+    in_cnt = int(proc.stdout.readline().strip())
+    income = []
+    for i in range(in_cnt):
+        income.append(proc.stdout.readline().split())
+    out_cnt = int(proc.stdout.readline().strip())
+    outcome = []
+    for i in range(out_cnt):
+        outcome.append(proc.stdout.readline().split())
+    return render_template("finance.html", username=result[1], privilege=result[2], income=income,
+                           outcome=outcome, in_total=in_total, out_total=out_total)
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)

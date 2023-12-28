@@ -67,13 +67,13 @@ FinanceReport::FinanceReport():
 in(), out(), income("ReportIncome"), outcome("ReportOutcome")
 {
   income.GetInfo(1, in);
-  outcome.GetInfo(2, out);
+  outcome.GetInfo(1, out);
 }
 
 FinanceReport::~FinanceReport()
 {
   income.WriteInfo(1, in);
-  outcome.WriteInfo(2, out);
+  outcome.WriteInfo(1, out);
 }
 
 void FinanceReport::Insert(const string &name_, int count_, long double cost_)
@@ -92,6 +92,7 @@ void FinanceReport::Insert(const string &name_, int count_, long double cost_)
 
 void FinanceReport::Print()
 {
+  cout << std::fixed << std::setprecision(2);
   finance_log.Print(-1);
   cout << in << endl;
   for (int i = 1; i <= in; ++i)
