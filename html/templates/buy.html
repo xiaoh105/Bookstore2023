@@ -28,8 +28,15 @@ variables:
           </li>
         {% endif %}
         {% if privilege >= 7 %}
-          <li class="nav-item">
-            <a class="nav-link" href="/Report">工作报表</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">工作报表</a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="/finance">财务报表</a>
+              <a class="dropdown-item" href="/employee">员工工作情况</a>
+              <a class="dropdown-item" href="/log">日志信息</a>
+            </li>
+          </ul>
           </li>
         {% endif %}
         <li class="nav-item dropdown">

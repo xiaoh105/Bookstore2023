@@ -278,6 +278,18 @@ def report_finance():
                            outcome=outcome, in_total=in_total, out_total=out_total)
 
 
+@app.route("/employee")
+def report_employee():
+    result = get_status()
+    proc.stdin.write("report employee\n")
+    proc.stdin.flush()
+    cnt = int(proc.stdout.readline().strip())
+    print(cnt)
+    info = []
+    for i in range(cnt):
+        info.append(proc.stdout.readline().split())
+    return render_template("employee.html", username=result[1], privilege=result[2], info=info)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
