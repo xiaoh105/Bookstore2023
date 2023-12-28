@@ -21,35 +21,12 @@ variables:
     <div class="collapse navbar-collapse" id="NavToggler">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active" href="/home">书籍查询</a>
+          <a class="nav-link" href="/home">书籍查询</a>
         </li>
-        {% if privilege >= 3 %}
-          <li class="nav-item">
-            <a class="nav-link" href="/user">用户操作</a>
-          </li>
-        {% endif %}
-        {% if privilege >= 7 %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">工作报表</a>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="/finance">财务报表</a>
-              <a class="dropdown-item" href="/employee">员工工作情况</a>
-              <a class="dropdown-item" href="/log">日志信息</a>
-            </li>
-          </ul>
-          </li>
-        {% endif %}
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
-            {{ username }}
+        <li class="nav-item active">
+          <a class="nav-link" role="button" data-bs-toggle="dropdown">
+            注册/登录
           </a>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" role="button" data-bs-toggle="modal" data-bs-target="#PasswordModal">修改密码</a>
-              <a class="dropdown-item" href="/logout">退出登录</a>
-            </li>
-          </ul>
         </li>
       </ul>
     </div>

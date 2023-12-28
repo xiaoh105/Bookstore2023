@@ -34,13 +34,13 @@ variables:
         {% if privilege >= 7 %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">工作报表</a>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="/finance">财务报表</a>
-              <a class="dropdown-item" href="/employee">员工工作情况</a>
-              <a class="dropdown-item" href="/log">日志信息</a>
-            </li>
-          </ul>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/finance">财务报表</a>
+                <a class="dropdown-item" href="/employee">员工工作情况</a>
+                <a class="dropdown-item" href="/log">日志信息</a>
+              </li>
+            </ul>
           </li>
         {% endif %}
         <li class="nav-item dropdown">
@@ -111,13 +111,14 @@ variables:
       </div>
       <div class="col-auto">
         <button type="submit" class="btn btn-light p-3" id="search_button" disabled>查询</button>
+        <a class="btn btn-outline-secondary p-3" href="/add">新建书籍</a>
       </div>
     </div>
   </form>
 </div>
 <div class="container-fluid">
   <div id="BookAccordion" class="accordion">
-    {% for i in range([books|length, 30]|min) %}
+    {% for i in range([books|length - (page - 1) * 30, 30]|min) %}
       {% set book = books[(page - 1) * 30 + i] %}
       {% set id = loop.index %}
       <div class="accordion-item">
@@ -195,9 +196,11 @@ variables:
             <strong>+</strong></button>
         </div>
         {% if book[5] > 0 %}
-          <button type="button" class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})">购买</button>
+          <button type="button" class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})">购买
+          </button>
         {% else %}
-          <button type="button" class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})" disabled>购买
+          <button type="button" class="btn btn-primary" id="buy_button{{ id }}" onclick="ShowBuyModal({{ id }})"
+                  disabled>购买
           </button>
         {% endif %}
         {% if privilege >= 3 %}
@@ -211,6 +214,17 @@ variables:
     </div>
     </div>
     {% endfor %}
+    </div>
+  </div>
+  <div class="btn-toolbar justify-content-center" role="toolbar">
+    <div class="btn-group me-2" role="group">
+      {% for i in range((books|length - 1) // 30 + 1) %}
+        {% if page == i + 1 %}
+          <a class="btn btn-outline-secondary active" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+        {% else %}
+          <a class="btn btn-outline-secondary" role="button" href="/bookinfo?page={{ i + 1 }}">{{ i + 1 }}</a>
+        {% endif %}
+      {% endfor %}
     </div>
   </div>
   <form method="post" action="/buy">

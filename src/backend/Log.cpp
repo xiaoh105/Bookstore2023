@@ -50,16 +50,19 @@ void FinanceLog::Print(int cnt)
   else { Invalid(); }
 }
 
-FinanceInfo::FinanceInfo(const string &name_, int count_, long double cost_):
-name(), count(count_), cost(cost_)
+FinanceInfo::FinanceInfo
+(const string &name_, int count_, long double cost_, const string &user_):
+name(), count(count_), cost(cost_), user()
 {
   for (int i = 0; i < name_.size(); ++i) name[i] = name_[i];
   name[name_.size()] = '\0';
+  for (int i = 0; i < user_.size(); ++i) user[i] = user_[i];
+  user[user_.size()] = '\0';
 }
 
 std::ostream &operator<<(std::ostream &os, const FinanceInfo &info)
 {
-  os << info.name << " " << info.count << " " << info.cost;
+  os << info.name << " " << info.count << " " << info.cost << " " << info.user;
   return os;
 }
 
@@ -76,17 +79,18 @@ FinanceReport::~FinanceReport()
   outcome.WriteInfo(1, out);
 }
 
-void FinanceReport::Insert(const string &name_, int count_, long double cost_)
+void FinanceReport::Insert
+(const string &name_, int count_, long double cost_, const string &user_)
 {
   if (cost_ > 0)
   {
     out = outcome.AskId();
-    outcome.Write(out, FinanceInfo(name_, count_, cost_));
+    outcome.Write(out, FinanceInfo(name_, count_, cost_, user_));
   }
   else
   {
     in = income.AskId();
-    income.Write(in, FinanceInfo(name_, count_, std::abs(cost_)));
+    income.Write(in, FinanceInfo(name_, count_, std::abs(cost_), user_));
   }
 }
 

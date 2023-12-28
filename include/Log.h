@@ -26,12 +26,13 @@ class FinanceInfo
  private:
   friend class FinanceReport;
   char name[50];
+  char user[50];
   int count;
   long double cost;
 
  public:
   FinanceInfo() = default;
-  FinanceInfo(const string &name_, int count_, long double cost_);
+  FinanceInfo(const string &name_, int count_, long double cost_, const string &user_);
   friend std::ostream &operator<<(std::ostream &os, const FinanceInfo &info);
 };
 
@@ -46,7 +47,7 @@ class FinanceReport
   FinanceReport();
   ~FinanceReport();
   /// Insert a finance info, cost_ > 0 for outcome
-  void Insert(const string &name_, int count_, long double cost_);
+  void Insert(const string &name_, int count_, long double cost_, const string &user);
   void Print();
 };
 

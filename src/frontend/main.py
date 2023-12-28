@@ -225,7 +225,6 @@ def modify():
                      .format(name, author, keyword, price))
     proc.stdin.flush()
     info = proc.stdout.readline().strip()
-    print(info)
     if info == "succeed":
         return redirect(url_for("modify_page", ISBN=ISBN, name=name, author=author, keyword=keyword,
                                 price=price, succeed="True"))
@@ -289,6 +288,33 @@ def report_employee():
     for i in range(cnt):
         info.append(proc.stdout.readline().split())
     return render_template("employee.html", username=result[1], privilege=result[2], info=info)
+
+
+@app.route("/add")
+def add_page():
+    fail = bool(request.args.get("fail"))
+    succeed = bool(request.args.get("succeed"))
+    result = get_status()
+    return render_template("add_book.html", fail=fail, succeed=succeed, username=result[1],
+                           privilege=result[2])
+
+@app.route("/add_book", methods=["post"])
+def add_book():
+    ISBN = request.form.get("ISBN")
+    proc.stdin.write("select " + ISBN + '\n')
+    proc.stdin.flush()
+    name = request.form.get("name")
+    author = request.form.get("author")
+    keyword = request.form.get("keyword").replace(",", "|")
+    price = request.form.get("price")
+    proc.stdin.write('modify -name="{}" -author="{}" -keyword="{}" -price={}\n'
+                     .format(name, author, keyword, price))
+    proc.stdin.flush()
+    info = proc.stdout.readline().strip()
+    if info == "succeed":
+        return redirect(url_for("add_page", succeed="True"))
+    else:
+        return redirect(url_for("add_page", fail="True"))
 
 
 if __name__ == '__main__':
