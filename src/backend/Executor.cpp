@@ -12,6 +12,7 @@ BookSystem book;
 UserSystem user;
 FinanceLog finance_log;
 FinanceReport finance_report;
+Log log;
 
 Executor::Executor():name_stack(), book_stack(), id_map(), id_stack()
 {
@@ -101,6 +102,7 @@ void Executor::listen()
         book_stack.push(-1);
         id_stack.push(userid);
         ++id_map[userid];
+        log.Insert("User " + username + " registered.");
       }
       else { Invalid(); }
     }
@@ -111,7 +113,10 @@ void Executor::listen()
           GetPassword(command, userid, cur_password, new_password))
       {
         if (user.Passwd(userid, GetPrivilege(), cur_password, new_password))
+        {
           cout << "succeed" << endl;
+          log.Insert("User " + GetName() + " changed password.");
+        }
         else Invalid();
       }
       else { Invalid(); }
@@ -241,6 +246,13 @@ void Executor::listen()
       {
         if (is_finance) { finance_report.Print(); }
         else { employee_report.Print(); }
+      }
+    }
+    else if (op == "log")
+    {
+      if (GetLog(command))
+      {
+        log.Print();
       }
     }
     else

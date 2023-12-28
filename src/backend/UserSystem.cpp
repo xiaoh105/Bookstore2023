@@ -2,6 +2,7 @@
 #include <cassert>
 #include "UserSystem.h"
 #include "Utils.h"
+#include "Executor.h"
 
 UserInfo::UserInfo(const string &userid_,const string &password_,
                    const string &username_, int privilege_):
@@ -135,12 +136,15 @@ void UserSystem::UserAdd(const string &userid, const string &password,
   if (id != npos) { Invalid(); return; }
   Insert(userid, password, static_cast<Privilege>(privilege), username);
   std::cout << "succeed" << std::endl;
+  log.Insert(executor.GetName() + " add user " + username
+                  + " with privilege " + std::to_string(privilege) + ".");
 }
 
 void UserSystem::Delete(const string &userid)
 {
   int id = Find(userid);
   if (id == npos) { Invalid(); return; }
+  log.Insert(string("root delete user ") + user[id].username + ".");
   user.Del(id);
   id_map.Remove({GetHash(userid), id});
 }

@@ -104,6 +104,8 @@ void BookSystem::Buy(const string &code, int quantity)
   cout << "succeed ";
   cout << std::fixed << std::setprecision(2);
   cout << quantity * info.price << endl;
+  log.Insert("User " + executor.GetName() + " buy " + std::to_string(quantity)
+             + " " + info.name + ".");
   finance_log.Insert(quantity * info.price);
   finance_report.Insert(info.name, quantity, -quantity * info.price, executor.GetName());
 }
@@ -159,6 +161,7 @@ void BookSystem::Modify(int id, const string &ISBN,
   book.Write(id, info);
   std::cout << "succeed" << std::endl;
   employee_report.RecordModify(executor.GetName());
+  log.Insert("User " + executor.GetName() + " modify book " + info.name + ".");
 }
 
 void BookSystem::Import(int id, int quantity, long double total_cost)
@@ -172,6 +175,8 @@ void BookSystem::Import(int id, int quantity, long double total_cost)
   std::cout << "succeed" << std::endl;
   finance_report.Insert(info.name, quantity, total_cost, executor.GetName());
   employee_report.RecordImport(executor.GetName(), total_cost);
+  log.Insert("User " + executor.GetName() + " import " + std::to_string(quantity)
+             + " " + info.name + " with price " + std::to_string(total_cost) + ".");
 }
 
 int BookSystem::Create(const string &code)

@@ -83,4 +83,31 @@ class EmployeeReport
   void Print();
 };
 
+class Log;
+
+class LogInfo
+{
+ private:
+  friend class Log;
+  char info[100];
+
+ public:
+  LogInfo() = default;
+  explicit LogInfo(const string &info_);
+  friend std::ostream &operator<<(std::ostream &os, const LogInfo &info);
+};
+
+class Log
+{
+ private:
+  int num;
+  FileReader<LogInfo, 1> info;
+
+ public:
+  Log();
+  ~Log();
+  void Insert(const string &info_);
+  void Print();
+};
+
 #endif //HOMEWORK5_BOOKSTORE_LOG_H

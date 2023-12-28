@@ -9,6 +9,7 @@
 using std::string;
 
 extern EmployeeReport employee_report;
+extern Log log;
 
 class UserSystem;
 

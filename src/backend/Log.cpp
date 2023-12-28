@@ -172,3 +172,40 @@ void EmployeeReport::Print()
     cout << tmp << endl;
   }
 }
+
+LogInfo::LogInfo(const string &info_): info()
+{
+  for (int i = 0; i < info_.size(); ++i) info[i] = info_[i];
+  info[info_.size()] = '\0';
+}
+
+std::ostream &operator<<(std::ostream &os, const LogInfo &info)
+{
+  os << info.info;
+  return os;
+}
+
+Log::Log(): num(), info("Log")
+{
+  info.GetInfo(1, num);
+}
+
+Log::~Log()
+{
+  info.WriteInfo(1, num);
+}
+
+void Log::Insert(const string &info_)
+{
+  num = info.AskId();
+  info.Write(num, LogInfo(info_));
+}
+
+void Log::Print()
+{
+  cout << num << endl;
+  for (int i = 1; i <= num; ++i)
+  {
+    cout << info[i] << endl;
+  }
+}
